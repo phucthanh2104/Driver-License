@@ -8,6 +8,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TestDetailsServiceImpl implements TestDetailsService {
 
@@ -16,7 +18,7 @@ public class TestDetailsServiceImpl implements TestDetailsService {
     @Autowired
     private ModelMapper modelMapper;
     @Override
-    public Iterable<TestDetails> findAll() {
+    public List<TestDetails> findAll() {
         return modelMapper.map(testDetailsRepository.findAll(), new TypeToken<Iterable<TestDetailsDTO>>() {}.getType()) ;
     }
 }
