@@ -3,6 +3,8 @@ package com.demo.services;
 
 import com.demo.entities.TestDetails;
 
+import java.util.List;
+
 public interface TestDetailsService {
-    public Iterable<TestDetails> findAll();
+    public List<TestDetails> findAll();
 }
