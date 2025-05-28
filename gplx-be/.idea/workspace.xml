@@ -14,8 +14,11 @@
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsServiceImpl.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/entities/TestSimulatorDetail.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/models/testSimulatorDetails_api.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/simulator_test_list.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/situation_detail.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_random_list.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_random_question.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" afterDir="false" />
@@ -174,6 +177,8 @@
       <workItem from="1748331329352" duration="11000" />
       <workItem from="1748357520425" duration="4797000" />
       <workItem from="1748423601160" duration="668000" />
+      <workItem from="1748434238662" duration="8000" />
+      <workItem from="1748436403630" duration="3015000" />
     </task>
     <servers />
   </component>
