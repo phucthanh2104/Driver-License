@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b978d6b4-cd4b-4c1f-8278-7e2f0c217dc8" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestSimulatorDetailsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestSimulatorDetailDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/TestSimulatorDetails.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestSimulatorDetailsRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/entities/TestSimulatorDetail.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/models/testSimulatorDetails_api.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/simulator_test_list.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/situation_detail.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/ChapterSimulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/ChapterSimulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/SimulatorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/SimulatorRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/entities/ChapterSimulator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/entities/ChapterSimulator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/entities/test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/entities/Test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/question_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/question_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/testDetails_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/testDetails_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/test_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/test_api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/dashboard.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_failed_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_failed_list.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_question.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_test_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_test_list.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_dashboard.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/simulator_review_chapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/simulator_review_chapter.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/situation_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/situation_detail.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/test/test_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_list.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/test/test_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_question.dart" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;phucthanh2104&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/devthanhtu283/gplx.git&quot;,
+    &quot;accountId&quot;: &quot;1b18be1d-d8d2-4f28-8f02-e5a502ea854d&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2vI5BROnm1XA4CL3aUQZrGxdCHM" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.GplxBeApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;phucthanh&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/DoAnTotNghiep/github/gplx/gplx-be&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\DoAnTotNghiep\github\gplx\gplx-be\src\main\resources\static\assets\images" />
+      <recent name="D:\DoAnTotNghiep\github\gplx\gplx-be\src\main\java\com\demo\services" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.demo.controllers" />
+      <recent name="com.demo.services" />
+      <recent name="com.demo.repositories" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="GplxBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="gplx-be" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.demo.GplxBeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b978d6b4-cd4b-4c1f-8278-7e2f0c217dc8" name="Changes" comment="" />
+      <created>1743735601115</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743735601115</updated>
+      <workItem from="1743735602279" duration="1548000" />
+      <workItem from="1743819612921" duration="1205000" />
+      <workItem from="1744081983254" duration="22000" />
+      <workItem from="1744259002371" duration="1151000" />
+      <workItem from="1744306535500" duration="413000" />
+      <workItem from="1744706292007" duration="458000" />
+      <workItem from="1744771252567" duration="558000" />
+      <workItem from="1745645539601" duration="7595000" />
+      <workItem from="1745824178715" duration="1629000" />
+      <workItem from="1745833590572" duration="1061000" />
+      <workItem from="1746364816831" duration="16000" />
+      <workItem from="1746971226596" duration="2108000" />
+      <workItem from="1747058794490" duration="2991000" />
+      <workItem from="1747143009511" duration="7803000" />
+      <workItem from="1747813918506" duration="5420000" />
+      <workItem from="1747900649683" duration="11742000" />
+      <workItem from="1747923330366" duration="2000" />
+      <workItem from="1747927845068" duration="4074000" />
+      <workItem from="1748009160323" duration="4470000" />
+      <workItem from="1748094640287" duration="1833000" />
+      <workItem from="1748159401397" duration="21000" />
+      <workItem from="1748273684135" duration="1914000" />
+      <workItem from="1748331329352" duration="11000" />
+      <workItem from="1748357520425" duration="4797000" />
+      <workItem from="1748423601160" duration="668000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
