@@ -6,7 +6,6 @@ class SituationDetailPage extends StatefulWidget {
   final List<Simulator> situations; // Danh sách các tình huống
   final int initialIndex; // Vị trí tình huống ban đầu
 
-
   const SituationDetailPage({
     Key? key,
     required this.situations,
@@ -25,6 +24,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
   int? _flaggedSecond;
   bool isCheckFlag = false;
   bool _showGuide = false;
+  bool _isMenuOpen = false; // Trạng thái mở/đóng menu
 
   late int videoLength;
   late int dangerSecond;
@@ -38,8 +38,6 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
   final String twoScore = "orange";
   final String oneScore = "red";
   final String zeroScore = "black";
-
-
 
   late Map<int, String> colorMap;
 
@@ -113,12 +111,11 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     }
   }
 
-
   void _flagCurrentPosition() {
     if (!isCheckFlag) {
       final position = _controller.value.position.inSeconds;
-      final clampedPosition = position.clamp(0, videoLength - 1); // Đảm bảo hợp lệ
-      final score = _calculateScore(clampedPosition); // 🎯 Tính điểm
+      final clampedPosition = position.clamp(0, videoLength - 1);
+      final score = _calculateScore(clampedPosition);
 
       print('Người dùng gắn cờ tại: $clampedPosition giây -> Điểm: $score');
 
@@ -126,11 +123,9 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
         isCheckFlag = true;
         _flaggedSecond = clampedPosition;
         _score = score;
-        // Bạn có thể lưu `score` vào một biến state nếu muốn hiển thị
       });
     }
   }
-
 
   void _toggleGuideVisibility() {
     setState(() {
@@ -169,6 +164,20 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     _score = null;
   }
 
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+    });
+  }
+
+  void _selectSituation(int index) {
+    setState(() {
+      currentIndex = index;
+      _resetVideo();
+      _isMenuOpen = false; // Đóng menu sau khi chọn
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final simulator = widget.situations[currentIndex];
@@ -180,156 +189,199 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: _toggleMenu,
+          ),
+        ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          _controller.value.isInitialized
-              ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )
-              : Container(
-            height: 200,
-            color: Colors.grey[300],
-            child: const Center(child: CircularProgressIndicator()),
-          ),
-          VideoProgressIndicator(
-            _controller,
-            allowScrubbing: true,
-            colors: VideoProgressColors(
-              playedColor: Colors.red,
-              bufferedColor: Colors.grey,
-              backgroundColor: Colors.grey[300]!,
-            ),
-          ),
-          isCheckFlag
-              ? ScoreProgressBar(
-            videoLength: videoLength,
-            colorMap: colorMap,
-            controller: _controller,
-            flaggedSecond: _flaggedSecond,
-          )
-              : const SizedBox(height: 10),
-          // Nút điều khiển video
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: [
-              IconButton(
-                icon: const Icon(Icons.replay),
-                onPressed: () {
-                  _controller.seekTo(Duration.zero);
-                  _controller.play();
-                  setState(() {
-                    _isPlaying = true;
-                    _flaggedSecond = null;
-                    isCheckFlag = false;
-                    _score = null;
-                  });
-                },
+              _controller.value.isInitialized
+                  ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+                  : Container(
+                height: 200,
+                color: Colors.grey[300],
+                child: const Center(child: CircularProgressIndicator()),
               ),
-              IconButton(
-                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                onPressed: _togglePlayPause,
-              ),
-              IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: _toggleGuideVisibility,
-              ),
-            ],
-          ),
-          // Nút điều hướng và gắn cờ
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: currentIndex > 0 ? _previousSituation : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: currentIndex > 0 ? Colors.yellow : Colors.grey,
-                  foregroundColor: Colors.black,
+              VideoProgressIndicator(
+                _controller,
+                allowScrubbing: true,
+                colors: VideoProgressColors(
+                  playedColor: Colors.red,
+                  bufferedColor: Colors.grey,
+                  backgroundColor: Colors.grey[300]!,
                 ),
-                child: const Text("Câu trước"),
               ),
-              const SizedBox(width: 16),
-              ElevatedButton(
-                onPressed: _flagCurrentPosition,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.cyanAccent,
-                  foregroundColor: Colors.black,
-                ),
-                child: const Text("Gắn cờ"),
+              isCheckFlag
+                  ? ScoreProgressBar(
+                videoLength: videoLength,
+                colorMap: colorMap,
+                controller: _controller,
+                flaggedSecond: _flaggedSecond,
+              )
+                  : const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.replay),
+                    onPressed: () {
+                      _controller.seekTo(Duration.zero);
+                      _controller.play();
+                      setState(() {
+                        _isPlaying = true;
+                        _flaggedSecond = null;
+                        isCheckFlag = false;
+                        _score = null;
+                      });
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                    onPressed: _togglePlayPause,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: _toggleGuideVisibility,
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              ElevatedButton(
-                onPressed: currentIndex < widget.situations.length - 1 ? _nextSituation : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: currentIndex < widget.situations.length - 1 ? Colors.yellow : Colors.grey,
-                  foregroundColor: Colors.black,
-                ),
-                child: const Text("Câu sau"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: currentIndex > 0 ? _previousSituation : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: currentIndex > 0 ? Colors.yellow : Colors.grey,
+                      foregroundColor: Colors.black,
+                    ),
+                    child: const Text("Câu trước"),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: _flagCurrentPosition,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.cyanAccent,
+                      foregroundColor: Colors.black,
+                    ),
+                    child: const Text("Gắn cờ"),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: currentIndex < widget.situations.length - 1 ? _nextSituation : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: currentIndex < widget.situations.length - 1 ? Colors.yellow : Colors.grey,
+                      foregroundColor: Colors.black,
+                    ),
+                    child: const Text("Câu sau"),
+                  ),
+                ],
               ),
-            ],
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            simulator.title,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          if (_score != null)
-                            Text("Điểm của bạn: $_score", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-                          const SizedBox(height: 8),
-                          Text(
-                            simulator.description,
-                            style: const TextStyle(fontSize: 14, color: Colors.black87),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      AnimatedSize(
-                        duration: const Duration(milliseconds: 300),
-                        child: Visibility(
-                          visible: _showGuide,
-                          child: Column(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 16),
-                              const Text(
-                                "Hướng dẫn:",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              Text(
+                                simulator.title,
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
+                              if (_score != null)
+                                Text("Điểm của bạn: $_score", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                               const SizedBox(height: 8),
                               Text(
-                                simulator.guideDescription,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              const SizedBox(height: 8),
-                              Image.network(
-                                simulator.guideImage,
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Text("Không thể tải hình ảnh hướng dẫn");
-                                },
+                                simulator.description,
+                                style: const TextStyle(fontSize: 14, color: Colors.black87),
                               ),
                             ],
                           ),
-                        ),
+                          const SizedBox(height: 16),
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 300),
+                            child: Visibility(
+                              visible: _showGuide,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    "Hướng dẫn:",
+                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    simulator.guideDescription,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Image.network(
+                                    simulator.guideImage,
+                                    height: 200,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Text("Không thể tải hình ảnh hướng dẫn");
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
+              ),
+            ],
+          ),
+          // Panel menu bên phải
+          AnimatedPositioned(
+            duration: Duration(milliseconds: 300),
+            right: _isMenuOpen ? 0 : -300, // Chiều rộng panel là 300
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: 300,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  AppBar(
+                    title: Text('Danh sách tình huống'),
+                    automaticallyImplyLeading: false,
+                    backgroundColor: Colors.blue,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: widget.situations.length,
+                      itemBuilder: (context, index) {
+                        final situation = widget.situations[index];
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: index == currentIndex ? Colors.green : Colors.blue,
+                            child: Text(situation.id.toString() ),
+                          ),
+                          title: Text(situation.description ?? 'Không có mô tả'),
+                          onTap: () => _selectSituation(index),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -338,6 +390,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     );
   }
 }
+
 class ScoreProgressBar extends StatelessWidget {
   final int videoLength;
   final Map<int, String> colorMap;
@@ -373,35 +426,34 @@ class ScoreProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Giữ padding dọc
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, VideoPlayerValue value, child) {
-          final screenWidth = MediaQuery.of(context).size.width; // Lấy toàn bộ chiều rộng màn hình
+          final screenWidth = MediaQuery.of(context).size.width;
           final currentSecond = value.position.inSeconds.clamp(0, videoLength - 1);
-          const spacing = 0.1; // Khoảng cách giữa các đoạn (tăng để dễ nhìn)
-          final baseSegmentWidth = screenWidth / videoLength; // Chiều rộng cơ bản mỗi giây
-          final adjustedSegmentWidth = baseSegmentWidth - spacing; // Điều chỉnh chiều rộng để thêm padding
+          const spacing = 0.1;
+          final baseSegmentWidth = screenWidth / videoLength;
+          final adjustedSegmentWidth = baseSegmentWidth - spacing;
 
           return SizedBox(
-            width: screenWidth, // Đảm bảo bao phủ toàn bộ chiều rộng
-            height: 45, // Tăng chiều cao của Stack để chứa lá cờ lớn hơn
+            width: screenWidth,
+            height: 45,
             child: Stack(
               alignment: Alignment.topLeft,
-              clipBehavior: Clip.none, // Đảm bảo lá cờ không bị cắt
+              clipBehavior: Clip.none,
               children: [
-                // Thanh tiến trình với các đoạn màu
                 Positioned(
-                  top: 25, // Đẩy thanh tiến trình xuống để có không gian cho lá cờ lớn
+                  top: 25,
                   left: 0,
                   right: 0,
                   child: Row(
-                    mainAxisSize: MainAxisSize.max, // Đảm bảo Row chiếm toàn bộ chiều rộng
+                    mainAxisSize: MainAxisSize.max,
                     children: List.generate(videoLength, (index) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: spacing / 2), // Thêm padding giữa các đoạn
+                        padding: const EdgeInsets.symmetric(horizontal: spacing / 2),
                         child: Container(
-                          width: adjustedSegmentWidth, // Sử dụng chiều rộng đã điều chỉnh
+                          width: adjustedSegmentWidth,
                           height: 10,
                           color: _getColor(colorMap[index] ?? 'black'),
                         ),
@@ -409,25 +461,14 @@ class ScoreProgressBar extends StatelessWidget {
                     }),
                   ),
                 ),
-                // Cờ hiện tại (vị trí phát video)
-                // Positioned(
-                //   left: (currentSecond * baseSegmentWidth),
-                //   top: 5, // Điều chỉnh vị trí để lá cờ hiển thị đầy đủ
-                //   child: const Icon(
-                //     Icons.flag,
-                //     color: Colors.red,
-                //     size: 40, // Tăng kích thước để dễ nhìn
-                //   ),
-                // ),
-                // Cờ người dùng gắn
                 if (flaggedSecond != null)
                   Positioned(
                     left: (flaggedSecond! * baseSegmentWidth),
-                    top: -8, // Điều chỉnh vị trí để lá cờ hiển thị đầy đủ
+                    top: -8,
                     child: const Icon(
                       Icons.flag,
                       color: Colors.purpleAccent,
-                      size: 40, // Tăng kích thước để dễ nhìn hơn
+                      size: 40,
                     ),
                   ),
               ],
