@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gplx/entities/Simulator.dart';
+import 'package:gplx/models/simulator_api.dart';
 import 'package:gplx/pages/dashboard.dart';
 import 'package:gplx/pages/simulator/simulator_review/simulator_review_list.dart';
+import 'package:gplx/pages/simulator/simulator_review/situation_all_detail.dart';
+import 'package:gplx/pages/simulator/simulator_review/situation_detail.dart';
 import 'package:gplx/pages/simulator/simulator_test/simulator_test_list.dart';
 import 'package:gplx/pages/test/test_list.dart';
 
@@ -10,6 +14,11 @@ class SimulationDashboardPage extends StatefulWidget {
 }
 
 class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
+  final SimulatorAPI _simulatorAPI = SimulatorAPI();
+  List<Simulator> _situations = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+
   // Danh sách các mục trong trang mô phỏng
   final List<Map<String, dynamic>> simulationItems = [
     {
@@ -28,17 +37,37 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
       'color': Colors.purple,
     },
     {
-      'title': 'Các tình huống ghi nhớ',
+      'title': 'Bộ tình huống ngẫu nhiên',
       'icon': Icons.bookmark,
       'color': Colors.red,
     },
-
     {
       'title': 'Trở về lý thuyết',
       'icon': Icons.list_alt,
       'color': Colors.white,
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSituations();
+  }
+
+  Future<void> _fetchSituations() async {
+    try {
+      final situations = await _simulatorAPI.findAll();
+      setState(() {
+        _situations = situations;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Không thể tải danh sách tình huống: $e';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +78,6 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              // Xử lý khi nhấn vào nút cài đặt
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Mở cài đặt')),
               );
@@ -57,74 +85,23 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
           ),
         ],
       ),
-      body: Padding(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _errorMessage != null
+          ? Center(child: Text(_errorMessage!))
+          : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Phần thông số
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           'Số tình huống',
-            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            //         ),
-            //         SizedBox(height: 4),
-            //         Text(
-            //           '0/120',
-            //           style: TextStyle(fontSize: 16, color: Colors.purple),
-            //         ),
-            //         SizedBox(height: 16),
-            //         Text(
-            //           'Thi ngẫu nhiên',
-            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            //         ),
-            //         SizedBox(height: 4),
-            //         Text(
-            //           '0',
-            //           style: TextStyle(fontSize: 16, color: Colors.purple),
-            //         ),
-            //       ],
-            //     ),
-            //     Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           'Điểm trung bình',
-            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            //         ),
-            //         SizedBox(height: 4),
-            //         Text(
-            //           '0/50',
-            //           style: TextStyle(fontSize: 16, color: Colors.red),
-            //         ),
-            //         SizedBox(height: 16),
-            //         Text(
-            //           'Thi theo bộ đề',
-            //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            //         ),
-            //         SizedBox(height: 4),
-            //         Text(
-            //           '0/12',
-            //           style: TextStyle(fontSize: 16, color: Colors.red),
-            //         ),
-            //       ],
-            //     ),
-            //   ],
-            // ),
             SizedBox(height: 16),
-            // Phần danh sách các nút chức năng
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 cột
+                  crossAxisCount: 2,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
-                  childAspectRatio: 1.0, // Tỷ lệ chiều rộng/chiều cao của ô
+                  childAspectRatio: 1.0,
                 ),
                 itemCount: simulationItems.length,
                 itemBuilder: (context, index) {
@@ -132,7 +109,6 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
                     color: simulationItems[index]['color'],
                     child: InkWell(
                       onTap: () {
-                        // Chuyển hướng đến SimulatorReviewPage khi nhấn "Ôn thi"
                         if (simulationItems[index]['title'] == 'Ôn thi') {
                           Navigator.push(
                             context,
@@ -147,14 +123,41 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
                               builder: (context) => DashboardPage(),
                             ),
                           );
-                        }else if (simulationItems[index]['title'] == 'Thi thử') {
+                        }else if (simulationItems[index]['title'] == 'Bộ tình huống ngẫu nhiên') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DashboardPage(),
+                            ),
+                          );
+                        } else if (simulationItems[index]['title'] == 'Toàn bộ tình huống') {
+                          if (_situations.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SituationAllDetailPage(
+                                  situations: _situations, // Truyền danh sách _situations
+                                  initialIndex: 0, // Bắt đầu với tình huống đầu tiên
+                                  testId: 0,
+                                  testPassedScore: 0,
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Không có tình huống nào để hiển thị'),
+                              ),
+                            );
+                          }
+                        } else if (simulationItems[index]['title'] == 'Thi thử') {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => SimulatorTestListPage(),
                             ),
                           );
-                        }else {
+                        } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Bạn đã nhấn vào: ${simulationItems[index]['title']}'),
@@ -194,8 +197,6 @@ class _SimulationDashboardPageState extends State<SimulationDashboardPage> {
           ],
         ),
       ),
-      // Banner quảng cáo ở dưới cùng
-
     );
   }
 }
