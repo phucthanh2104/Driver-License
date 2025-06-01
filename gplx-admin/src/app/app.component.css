@@ -1,0 +1,123 @@
+* {
+            box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều ngang */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Container */
+        .container-fluid {
+            padding: 0; /* Loại bỏ padding mặc định của container-fluid */
+            width: 100vw;
+        }
+
+        .row {
+            margin: 0; /* Loại bỏ margin mặc định của row */
+            width: 100vw;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #ffffff; /* Giữ nguyên màu trắng */
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding-top: 20px;
+            padding-right: 10px;
+            padding-left: 10px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6c5ce7; /* Giữ nguyên màu tím */
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: uppercase; /* Chữ in hoa giống hình */
+        }
+
+        .sidebar .nav-link {
+            color: #6c757d; /* Giữ nguyên màu xám */
+            padding: 10px 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #6c5ce7; /* Giữ nguyên màu tím khi hover/active */
+            background-color: #f0eaff; /* Giữ nguyên màu nền tím nhạt */
+            border-radius: 5px;
+        }
+
+        .sidebar .nav-link .badge {
+            background-color: #ffeaa7;
+            color: #2d3436;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+        .sidebar .nav-link.sub-item {
+            padding-left: 40px;
+            font-size: 13px;
+        }
+
+        .sidebar .nav-link.bottom-item {
+            color: #6c5ce7; /* Giữ nguyên màu tím */
+            font-weight: 500;
+        }
+
+        /* Main content */
+        .content {
+            margin-left: 250px;
+            padding: 20px 20px 20px 20px ; /* Loại bỏ padding trái, giữ padding các phía khác */
+            min-height: 100vh;
+            background-color: #ffffff;
+            width: calc(100vw - 250px); /* Chiều ngang: toàn bộ viewport trừ 250px của sidebar */
+        
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 100%) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar .logo {
+                font-size: 18px;
+            }
+
+            .sidebar .nav-link {
+                padding: 10px 15px;
+                justify-content: center;
+            }
+
+            .sidebar .nav-link span,
+            .sidebar .nav-link .badge {
+                display: none;
+            }
+
+           .content {
+                margin-left: 70px;
+                width: calc(100% - 70px); /* Điều chỉnh chiều ngang khi sidebar thu nhỏ */
+            }
+        }
+
+      

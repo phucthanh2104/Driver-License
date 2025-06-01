@@ -1,0 +1,257 @@
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            width: 100%;
+        }
+         .title{
+              color: #6c5ce7;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #ffffff;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6c5ce7;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-link {
+            color: #6c757d;
+            padding: 10px 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #6c5ce7;
+            background-color: #f0eaff;
+            border-radius: 5px;
+        }
+
+        .sidebar .nav-link .badge {
+            background-color: #ffeaa7;
+            color: #2d3436;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+        .sidebar .nav-link.sub-item {
+            padding-left: 40px;
+            font-size: 13px;
+        }
+
+        .sidebar .nav-link.bottom-item {
+            color: #6c5ce7;
+            font-weight: 500;
+        }
+
+        /* Main content */
+        .content {
+        
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .content .breadcrumb {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .content .breadcrumb a {
+            color: #6c5ce7;
+            text-decoration: none;
+        }
+
+        .content h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .content .description {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .content .description span {
+            color: #e83e8c;
+        }
+
+        /* Table */
+        .table-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .table-container .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-container .table-header select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+        .table-container .table-header input {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table th {
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .table td {
+            color: #2d3436;
+        }
+
+        .table .position-label {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .table .position-label.green {
+            background-color: #d4edda;
+            color: #155724;
+        }
+         .table .position-label.green1 {
+            background-color: #d4edda;
+            color: #155724;
+            font-size: 15px;
+        }
+        .table .position-label.red {
+            background-color: #ddc0be;
+            color: #ca3c04;
+        }
+
+        .table .position-label.blue {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .table .position-label.pink {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .table .action-buttons .btn {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .table .action-buttons .btn-edit {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .table .action-buttons .btn-delete {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .pagination-container .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .pagination-container .pagination .page-item .page-link {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .pagination-container .pagination .page-item.active .page-link {
+            background-color: #6c5ce7;
+            color: #ffffff;
+            border-color: #6c5ce7;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100px;
+                position: fixed;
+            }
+
+            .sidebar .logo {
+                font-size: 18px;
+            }
+
+            .sidebar .nav-link {
+                padding: 10px 15px;
+                justify-content: center;
+            }
+
+            .sidebar .nav-link span,
+            .sidebar .nav-link .badge {
+                display: none;
+            }
+
+            .content {
+                margin-left: 70px;
+            }
+        }
