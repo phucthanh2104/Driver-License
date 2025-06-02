@@ -34,4 +34,9 @@ public class SimulatorServiceImpl implements SimulatorService {
         return modelMapper.map(simulatorRepository.findById(id).get() , SimulatorDTO.class );
     }
 
+    @Override
+    public List<SimulatorDTO> findAll() {
+        return modelMapper.map(simulatorRepository.findAll() , new TypeToken<List<SimulatorDTO>>(){}.getType());
+    }
+
 }
