@@ -4,6 +4,7 @@ import { QuestionComponent } from './components/question/question.component';
 import { TestComponent } from './components/test/test.component';
 import { SimulatorComponent } from './components/simulator-test/simulator.component';
 import { SituationComponent } from './components/situation/situation.component';
+import { AddQuestionComponent } from './components/question/add-question.component copy';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'test',
     component: TestComponent,
+  },
+  {
+    path: 'add-question',
+    component: AddQuestionComponent,
   },
   {
     path: 'simulator',

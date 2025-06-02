@@ -10,4 +10,6 @@ public interface SimulatorService {
     public List<SimulatorDTO> findByChapterId(Integer id);
 
     public SimulatorDTO findById(Integer id);
+
+    public List<SimulatorDTO> findAll();
 }

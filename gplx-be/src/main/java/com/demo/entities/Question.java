@@ -20,7 +20,7 @@ public class Question {
     @Column(columnDefinition = "text")
     private String image;
 
-    @Column(name = "explain")
+    @Column(name = "`explain`", columnDefinition = "text")
     private String explain;
 
     private boolean status;
@@ -28,7 +28,7 @@ public class Question {
     @Column(name = "is_rankA")
     private boolean isRankA;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // Thay đổi thành EAGER
     private List<Answer> answers;
 
     @OneToMany(mappedBy = "question")

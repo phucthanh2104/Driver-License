@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b978d6b4-cd4b-4c1f-8278-7e2f0c217dc8" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/SimulatorController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestSimulatorDetailsController.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestSimulatorDetailDTO.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/TestSimulatorDetails.java" afterDir="false" />
@@ -13,25 +14,39 @@
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsService.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsServiceImpl.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/entities/TestSimulatorDetail.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/models/simulator_api.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/models/testSimulatorDetails_api.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/situation_all_detail.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/simulator_test_list.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/situation_detail.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/situation_random_detail.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_random_list.dart" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_random_question.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/QuestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/QuestionController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/ChapterSimulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/ChapterSimulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Question.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Simulator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/QuestionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/SimulatorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/SimulatorRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/assets/images/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/assets/images/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/assets/images/q73.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../gplx/lib/entities/ChapterSimulator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/entities/ChapterSimulator.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../gplx/lib/entities/test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/entities/Test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" afterDir="false" />
@@ -76,6 +91,10 @@
     &quot;accountId&quot;: &quot;1b18be1d-d8d2-4f28-8f02-e5a502ea854d&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -96,6 +115,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;HTTP Request.generated-requests | #93.executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -106,7 +126,7 @@
     &quot;git-widget-placeholder&quot;: &quot;phucthanh&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/DoAnTotNghiep/github/gplx/gplx-be&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Research/demo&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -126,7 +146,10 @@
       <recent name="com.demo.repositories" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.GplxBeApplication">
+    <configuration name="generated-requests | #93" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#93" index="93" runType="Run single request">
+      <method v="2" />
+    </configuration>
     <configuration name="GplxBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="gplx-be" />
@@ -135,6 +158,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.generated-requests | #93" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -180,6 +208,9 @@
       <workItem from="1748434238662" duration="8000" />
       <workItem from="1748436403630" duration="3015000" />
       <workItem from="1748527985787" duration="19000" />
+      <workItem from="1748704446666" duration="4957000" />
+      <workItem from="1748760034289" duration="26380000" />
+      <workItem from="1748828885167" duration="8192000" />
     </task>
     <servers />
   </component>
