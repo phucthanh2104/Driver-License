@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { QuestionService } from 'src/app/service/question.service';
 import { RankService } from 'src/app/service/rank.service';
 import { TestService } from 'src/app/service/test.service';
+
 
 @Component({
   selector: 'app-root',
@@ -8,37 +10,33 @@ import { TestService } from 'src/app/service/test.service';
   styleUrls: ['./test.component.css'],
 })
 export class TestComponent implements OnInit {
-  questionList = [
-    { id: 1, title: 'Câu hỏi 1' },
-    { id: 2, title: 'Câu hỏi 2' },
-    { id: 3, title: 'Câu hỏi 3' },
-    { id: 4, title: 'Câu hỏi 4' },
-    { id: 5, title: 'Câu hỏi 5' },
-  ];
-  listTest: any = {};
-  listTestOfRank: any = [];
-  listRank: any = {};
+  questionList: any[] = [];
+  listTest: any[] = [];
+  listTestOfRank: any[] = [];
+  listRank: any[] = [];
   listTestOriginal: any[] = [];
 
-  numbers: any;
-
-  selectedQuestions: { id: number; title: string }[] = [];
+  selectedQuestions: any[] = [];
   selectedLabels: string[] = [];
   newLabel: string = '';
   testTitle: string = '';
   testDescription: string = '';
   testTime: number | null = null;
   testType: string = '';
+  rankId: number | null = null; // Thêm biến rankId để lưu giá trị từ select
   searchTerm: string = '';
+  filteredQuestions: any[] = [];
 
   constructor(
     private testService: TestService,
-    private rankService: RankService
+    private rankService: RankService,
+    private questionService: QuestionService
   ) {}
 
   ngOnInit(): void {
     this.findAll();
     this.findListRank();
+    this.findAllQuestion();
   }
 
   findAll() {
@@ -49,33 +47,56 @@ export class TestComponent implements OnInit {
     });
   }
 
+  findAllQuestion() {
+    this.questionService.findAll().then((res) => {
+      console.log(res);
+      this.questionList = res;
+      this.filteredQuestions = [...this.questionList];
+    });
+  }
+
+  filterQuestions() {
+    if (!this.searchTerm) {
+      this.filteredQuestions = [...this.questionList];
+      return;
+    }
+    this.filteredQuestions = this.questionList.filter(
+      (question) =>
+        question.content
+          ?.toLowerCase()
+          .includes(this.searchTerm.toLowerCase()) ||
+        (question.id?.toString() &&
+          question.id.toString().includes(this.searchTerm))
+    );
+  }
+
   findTest(evt: any) {
     const rankId = evt.target.value;
     console.log('Rank ID:', rankId);
 
     if (rankId === '-1') {
-      // Nếu chọn "Tất cả", khôi phục danh sách gốc
       this.listTest = [...this.listTestOriginal];
     } else {
-      // Gọi API để lấy danh sách đề thi theo rankId
       this.rankService
         .findTestById(rankId)
         .then((res) => {
           console.log('Kết quả từ API:', res);
-          this.listTest = res; // Cập nhật danh sách đề thi từ phản hồi API
+          this.listTest = res;
         })
         .catch((error) => {
           console.error('Lỗi khi lấy danh sách đề thi:', error);
-          this.listTest = []; // Xử lý lỗi bằng cách đặt danh sách rỗng
+          this.listTest = [];
         });
     }
   }
+
   findListRank() {
     this.rankService.findAll().then((res) => {
       this.listRank = res;
       console.log(res);
     });
   }
+
   findTestTitle(evt: any) {
     const searchTerm = evt.target.value.toLowerCase().trim();
     console.log('Từ khóa tìm kiếm:', searchTerm);
@@ -90,14 +111,12 @@ export class TestComponent implements OnInit {
       const testNumberMatch = testTitle.match(/\d+/);
       const testNumber = testNumberMatch ? testNumberMatch[0] : null;
 
-      // Kiểm tra nếu không có số trong tìm kiếm, tìm trong cả title và description
       if (!searchNumber) {
         return (
           testTitle.includes(searchTerm) || testDescription.includes(searchTerm)
         );
       }
 
-      // Kiểm tra nếu có số, tìm trong title với từ khóa "đề" và số khớp
       if (searchNumber && testNumber) {
         return (
           (testNumber === searchNumber && testTitle.includes('đề')) ||
@@ -109,69 +128,96 @@ export class TestComponent implements OnInit {
     });
   }
 
-  // Thêm câu hỏi vào bảng bên phải và xóa câu hỏi khỏi bảng bên trái
-  addQuestionToTest(question: { id: number; title: string }) {
-    if (!this.selectedQuestions.includes(question)) {
+  addQuestionToTest(question: any) {
+    if (!this.selectedQuestions.some((q) => q.id === question.id)) {
       this.selectedQuestions.push(question);
-      const index = this.questionList.indexOf(question);
-      if (index > -1) {
-        this.questionList.splice(index, 1);
+      this.filteredQuestions = this.filteredQuestions.filter(
+        (q) => q.id !== question.id
+      );
+    }
+  }
+
+  removeQuestionFromTest(question: any) {
+    const index = this.selectedQuestions.findIndex((q) => q.id === question.id);
+    if (index > -1) {
+      this.selectedQuestions.splice(index, 1);
+      if (!this.filteredQuestions.some((q) => q.id === question.id)) {
+        this.filteredQuestions.push(question);
       }
     }
   }
 
-  // Xóa câu hỏi khỏi bảng bên phải và thêm lại vào bảng bên trái
-  removeQuestionFromTest(question: { id: number; title: string }) {
-    const index = this.selectedQuestions.indexOf(question);
-    if (index > -1) {
-      this.selectedQuestions.splice(index, 1);
-      this.questionList.push(question);
-    }
-  }
-
-  // Thêm nhãn vào danh sách đã chọn
   addLabelToTest() {
     if (this.newLabel && !this.selectedLabels.includes(this.newLabel)) {
       this.selectedLabels.push(this.newLabel);
-      this.newLabel = ''; // Reset ô nhập nhãn
+      this.newLabel = '';
     }
   }
 
-  // Xóa nhãn khỏi danh sách đã chọn
   removeLabelFromTest(label: string) {
     this.selectedLabels = this.selectedLabels.filter((l) => l !== label);
   }
 
-  // Lưu bộ đề
   saveTest() {
-    const testData = {
+    if (
+      !this.testTitle ||
+      !this.testTime ||
+      this.testType === '-1' ||
+      !this.rankId ||
+      this.rankId === -1
+    ) {
+      alert('Vui lòng điền đầy đủ thông tin tiêu đề, thời gian, loại và hạng!');
+      return;
+    }
+
+    const testData: any = {
       title: this.testTitle,
       description: this.testDescription,
       time: this.testTime,
       type: this.testType,
-      questions: this.selectedQuestions,
-      labels: this.selectedLabels,
+      status: true,
+      rank: this.rankId, // Lấy rankId từ giao diện
+      isTest: true, // Có thể thay đổi dựa trên logic nếu cần
+      numberOfQuestions: this.selectedQuestions.length,
+      testDetails: this.selectedQuestions.map((question) => ({
+        testId: null,
+        chapterId: null,
+        question: { id: question.id } ,
+        status: true,
+      })),
     };
+
     console.log('Dữ liệu bộ đề:', testData);
-    this.resetTestForm();
+    this.testService
+      .save(testData)
+      .then((response) => {
+        console.log('Kết quả lưu:', response);
+        alert('Lưu bộ đề thành công!');
+        const modalElement = document.getElementById('addTestModal');
+        if (modalElement) {
+          const modal = (window as any).bootstrap.Modal.getInstance(
+            modalElement
+          );
+          modal.hide();
+        }
+        this.resetTestForm();
+        this.findAll(); // Làm mới danh sách sau khi lưu
+      })
+      .catch((error) => {
+        console.error('Lỗi khi lưu bộ đề:', error);
+        alert('Có lỗi xảy ra khi lưu bộ đề: ' + error.message);
+      });
   }
 
-  // Reset form sau khi lưu
   resetTestForm() {
     this.testTitle = '';
     this.testDescription = '';
     this.testTime = null;
     this.testType = '';
+    this.rankId = null;
     this.selectedQuestions = [];
     this.selectedLabels = [];
     this.newLabel = '';
-    // Khôi phục lại danh sách câu hỏi ban đầu nếu cần
-    this.questionList = [
-      { id: 1, title: 'Câu hỏi 1' },
-      { id: 2, title: 'Câu hỏi 2' },
-      { id: 3, title: 'Câu hỏi 3' },
-      { id: 4, title: 'Câu hỏi 4' },
-      { id: 5, title: 'Câu hỏi 5' },
-    ];
+    this.findAllQuestion(); // Khôi phục lại danh sách câu hỏi ban đầu
   }
 }

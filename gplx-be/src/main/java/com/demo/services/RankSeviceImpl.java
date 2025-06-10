@@ -20,4 +20,9 @@ public class RankSeviceImpl implements RankService{
     public List<RankDTO> findAll() {
         return modelMapper.map(rankRepository.findAll(), new TypeToken<List<RankDTO>>() {}.getType());
     }
+
+    @Override
+    public RankDTO findById(int id) {
+        return modelMapper.map(rankRepository.findById(id).get(), new TypeToken<RankDTO>() {}.getType());
+    }
 }

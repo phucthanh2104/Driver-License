@@ -6,13 +6,15 @@ public class TestDetailDTO {
     private QuestionDTO question;
     private int time;
     private int passedScore;
+    private boolean status;
     public TestDetailDTO() {
     }
 
-    public TestDetailDTO(Integer testId, Integer chapterId, QuestionDTO question) {
+    public TestDetailDTO(Integer testId, Integer chapterId, QuestionDTO question, boolean status) {
         this.testId = testId;
         this.chapterId = chapterId;
         this.question = question;
+        this.status = status;
     }
 
     public Integer getTestId() {
@@ -53,6 +55,14 @@ public class TestDetailDTO {
         this.passedScore = passedScore;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     public TestDetailDTO(Integer testId, Integer chapterId, QuestionDTO question, int time, int passedScore) {
         this.testId = testId;
         this.chapterId = chapterId;
@@ -60,4 +70,5 @@ public class TestDetailDTO {
         this.time = time;
         this.passedScore = passedScore;
     }
+
 }

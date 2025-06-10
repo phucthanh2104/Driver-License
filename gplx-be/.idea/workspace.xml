@@ -5,63 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b978d6b4-cd4b-4c1f-8278-7e2f0c217dc8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/WebConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/SimulatorController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestSimulatorDetailsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestSimulatorDetailDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/TestSimulatorDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestSimulatorDetailsRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/entities/TestSimulatorDetail.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/models/simulator_api.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/models/testSimulatorDetails_api.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/situation_all_detail.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/simulator_test_list.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/situation_detail.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_test/situation_random_detail.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_random_list.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_random_question.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/QuestionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/QuestionController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/ChapterSimulatorDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/ChapterSimulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/ChapterSimulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Question.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Question.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/QuestionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/QuestionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/SimulatorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/SimulatorRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/repositories/TestRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDetailDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/RankService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/RankService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/RankSeviceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/RankSeviceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/assets/images/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/assets/images/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/assets/images/q73.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/entities/ChapterSimulator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/entities/ChapterSimulator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/entities/test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/entities/Test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/question_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/question_api.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/testDetails_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/testDetails_api.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/test_api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/test_api.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/dashboard.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_failed_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_failed_list.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_question.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_test_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_test_list.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_dashboard.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/simulator_review_chapter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/simulator_review_chapter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/situation_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/simulator/simulator_review/situation_detail.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/test/test_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_list.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/test/test_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/test/test_question.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,6 +167,15 @@
       <workItem from="1748704446666" duration="4957000" />
       <workItem from="1748760034289" duration="26380000" />
       <workItem from="1748828885167" duration="8192000" />
+      <workItem from="1748963005622" duration="1234000" />
+      <workItem from="1749033928902" duration="2522000" />
+      <workItem from="1749122680811" duration="3304000" />
+      <workItem from="1749198931347" duration="501000" />
+      <workItem from="1749199748363" duration="2409000" />
+      <workItem from="1749387575388" duration="824000" />
+      <workItem from="1749452162942" duration="1247000" />
+      <workItem from="1749489541458" duration="5048000" />
+      <workItem from="1749537760544" duration="5157000" />
     </task>
     <servers />
   </component>
