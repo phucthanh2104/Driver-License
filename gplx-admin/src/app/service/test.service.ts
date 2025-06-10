@@ -17,4 +17,7 @@ export class TestService {
   async findAllSimulator(): Promise<any> {
     return await lastValueFrom(this.httpClient.get(this.baseUrlService.getBaseUrl() + 'test/findAllSimulator'));
   }
+  async save(test : any): Promise<any> {
+    return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/addTestDetail', test));
+  }
 }

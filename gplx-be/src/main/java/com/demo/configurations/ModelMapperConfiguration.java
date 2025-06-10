@@ -1,6 +1,10 @@
 package com.demo.configurations;
 
+import com.demo.dtos.AnswerDTO;
+import com.demo.dtos.QuestionDTO;
 import com.demo.dtos.TestDTO;
+import com.demo.entities.Answer;
+import com.demo.entities.Question;
 import com.demo.entities.Rank;
 import com.demo.entities.Test;
 import org.modelmapper.ModelMapper;
@@ -19,10 +23,10 @@ public class ModelMapperConfiguration {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
 
         // Ánh xạ thủ công số câu hỏi
-        mapper.addMappings(new PropertyMap<Test, TestDTO>() {
+        modelMapper.addMappings(new PropertyMap<Test, TestDTO>() {
             @Override
             protected void configure() {
 //                using(ctx -> {
@@ -41,8 +45,33 @@ public class ModelMapperConfiguration {
                 }).map(source, destination.getRank());
             }
         });
+        // Cấu hình ánh xạ Question sang QuestionDTO
+        modelMapper.addMappings(new PropertyMap<Question, QuestionDTO>() {
+            @Override
+            protected void configure() {
+                map().setId(source.getId());
+                map().setContent(source.getContent());
+                map().setImage(source.getImage());
+                map().setExplain(source.getExplain());
+                map().setStatus(source.isStatus());
+                map().setRankA(source.getIsRankA());
+                map().setFailed(source.getIsFailed());
+            }
+        });
 
-        return mapper;
+        // Cấu hình ánh xạ Answer sang AnswerDTO
+        modelMapper.addMappings(new PropertyMap<Answer, AnswerDTO>() {
+            @Override
+            protected void configure() {
+                map().setId(source.getId());
+                map().setContent(source.getContent());
+                map().setCorrect(source.isCorrect());
+                map().setStatus(source.isStatus());
+            }
+        });
+
+
+        return modelMapper;
     }
 
 

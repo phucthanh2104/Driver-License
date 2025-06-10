@@ -11,12 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
@@ -121,6 +120,27 @@ public class TestController {
         catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping(value = "addTestDetail", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> addTest(@RequestBody TestDTO testDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            TestDTO savedTestDTO = testService.save(testDTO);
+            response.put("status", "success");
+            response.put("test", savedTestDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", "Có lỗi xảy ra khi thêm bài test: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

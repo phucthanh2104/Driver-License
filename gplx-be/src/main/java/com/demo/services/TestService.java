@@ -19,4 +19,5 @@ public interface TestService {
 
     public List<TestDTO> findTestByRankId(int rankId);
     public List<TestDTO> findSimulatorByRankId(int rankId);
+    public TestDTO save(TestDTO testDTO);
 }

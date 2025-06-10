@@ -4,6 +4,8 @@ import com.demo.entities.Rank;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 
+import java.util.List;
+
 
 public class TestDTO {
     private Long id;
@@ -16,6 +18,7 @@ public class TestDTO {
     private Integer rank;
     private boolean isTest;
     private Integer numberOfQuestions;
+    private List<TestDetailDTO> testDetails;
 
     public Long getId() {
         return id;
@@ -95,5 +98,12 @@ public class TestDTO {
 
     public void setNumberOfQuestions(Integer numberOfQuestions) {
         this.numberOfQuestions = numberOfQuestions;
+    }
+    public List<TestDetailDTO> getTestDetails() {
+        return testDetails;
+    }
+
+    public void setTestDetails(List<TestDetailDTO> testDetails) {
+        this.testDetails = testDetails;
     }
 }

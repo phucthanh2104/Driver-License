@@ -17,14 +17,14 @@
             phần tử
         </div>
         <div>
-            Bộ đề của hạng xe : 
+            Bộ đề của hạng xe :
             <select (change)="findTest($event)">
-                <option value ="-1">Tất cả</option>
+                <option value="-1">Tất cả</option>
                 <ng-container *ngFor="let lr of listRank">
-                <option [value]="lr.id" >{{lr.id}}-{{lr.name}}</option>
+                    <option [value]="lr.id">{{lr.id}}-{{lr.name}}</option>
                 </ng-container>
             </select>
-           
+
 
         </div>
         <div>
@@ -37,37 +37,37 @@
                 <th><b>#</b></th>
                 <th><b>Đề</b></th>
                 <th><b>Mô tả</b></th>
+                <th><b>Số câu</b></th>
                 <th><b>Thời gian</b></th>
-              
-                <th><b>Điểm đạt / tổng</b></th>
                 <th><b>Trạng thái</b></th>
                 <th><b>Thao tác</b></th>
             </tr>
         </thead>
         <tbody>
-           
-           <ng-container *ngFor="let test of listTest">
 
-            <tr>
-           
-                <td>{{test.id}}</td>
-                <td><span class="position-label green1">{{test.title}}</span></td>
-                <td>{{test.description}}</td>
-                <td>{{test.time}} phút</td>
-              
-                <td>{{test.passedScore}} / {{test.numberOfQuestions}} </td>
-                <td>
-                    <span *ngIf="test.status" class="position-label green">Khả dụng</span>
-                    <span *ngIf="!test.status" class="position-label red">Không khả dụng</span>
-                </td>
-                <td class="action-buttons">
-                    <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
-                </td>
-        
-            </tr>
-                   
-           </ng-container>
+            <ng-container *ngFor="let test of listTest">
+
+                <tr>
+
+                    <td>{{test.id}}</td>
+                    <td><span class="position-label green1">{{test.title}}</span></td>
+                    <td>{{test.description}}</td>
+                    <td>{{test.numberOfQuestions}}</td>
+                    <td>{{test.time}} phút</td>
+
+
+                    <td>
+                        <span *ngIf="test.status" class="position-label green">Khả dụng</span>
+                        <span *ngIf="!test.status" class="position-label red">Không khả dụng</span>
+                    </td>
+                    <td class="action-buttons">
+                        <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
+                    </td>
+
+                </tr>
+
+            </ng-container>
         </tbody>
     </table>
     <div class="pagination-container">
@@ -93,6 +93,7 @@
         </nav>
     </div>
 </div>
+<!-- Modal thêm bộ đề -->
 <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="max-width: 80%;">
         <div class="modal-content">
@@ -111,19 +112,27 @@
                     <div class="mb-3">
                         <label for="testDescription" class="form-label">Mô tả</label>
                         <textarea class="form-control" id="testDescription" [(ngModel)]="testDescription"
-                            name="testDescription" rows="3"></textarea>
+                            name="testDescription" rows="2"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="testTime" class="form-label">Thời gian (giây)</label>
+                        <label for="testTime" class="form-label">Thời gian (phút)</label>
                         <input type="number" class="form-control" id="testTime" [(ngModel)]="testTime" name="testTime"
                             required>
                     </div>
                     <div class="mb-3">
                         <label for="testType" class="form-label">Loại</label>
                         <select class="form-select" id="testType" [(ngModel)]="testType" name="testType" required>
-                            <option value="">Chọn loại</option>
-                            <option value="Objective">Objective</option>
-                            <option value="Staff">Staff</option>
+                            <option value="-1">Chọn loại</option>
+                            <option value="1">Thi</option>
+                            <option value="2">Chương</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rankId" class="form-label">Hạng</label>
+                        <select class="form-select" id="rankId" [(ngModel)]="rankId" name="rankId" required>
+                            <option value="-1">Chọn hạng</option>
+                            <option *ngFor="let rank of listRank" [value]="rank.id">{{ rank.id }} - {{ rank.name }}
+                            </option>
                         </select>
                     </div>
 
@@ -131,15 +140,9 @@
                     <div class="d-flex mb-3">
                         <!-- Table 1: List of Questions and Labels (Left) -->
                         <div class="flex-fill me-3">
-                            <h6>Danh sách</h6>
-                            <!-- Nhập nhãn -->
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Nhập nhãn" [(ngModel)]="newLabel"
-                                    name="newLabel">
-                                <button type="button" class="btn btn-primary" (click)="addLabelToTest()">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
+                            <h6>Câu hỏi</h6>
+                            <input type="text" class="form-control mb-2" placeholder="Tìm kiếm câu hỏi"
+                                [(ngModel)]="searchTerm" (ngModelChange)="filterQuestions()">
                             <!-- Bảng câu hỏi -->
                             <table class="table table-striped">
                                 <thead class="table-dark">
@@ -149,8 +152,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let question of questionList">
-                                        <td>{{ question.title }}</td>
+                                    <tr *ngFor="let question of filteredQuestions">
+                                        <td>{{ question.content }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
                                                 (click)="addQuestionToTest(question)">
@@ -175,7 +178,7 @@
                                 <tbody>
                                     <!-- Hiển thị câu hỏi đã chọn -->
                                     <tr *ngFor="let question of selectedQuestions">
-                                        <td>{{ question.title }}</td>
+                                        <td>{{ question.content }}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger btn-sm"
                                                 (click)="removeQuestionFromTest(question)">
