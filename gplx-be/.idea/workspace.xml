@@ -5,19 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b978d6b4-cd4b-4c1f-8278-7e2f0c217dc8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/configurations/ModelMapperConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/ChatBotController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/demo/helpers/OllamaClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/app-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/app-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/components/question/add-question.component copy.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/components/question/add-question.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/components/question/question.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/components/question/question.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/components/question/question.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/components/question/question.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/components/test/test.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/components/test/test.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/components/test/test.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/components/test/test.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/service/question.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/service/question.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gplx-admin/src/app/service/test.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx-admin/src/app/service/test.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/dtos/TestDetailDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/RankService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/RankService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/RankSeviceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/RankSeviceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/models/base_url.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/dashboard.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_all_question.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gplx/lib/pages/review/review_test_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../gplx/lib/pages/review/review_test_list.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +51,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/devthanhtu283/gplx.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/phucthanh2104/Driver-License.git&quot;,
     &quot;accountId&quot;: &quot;1b18be1d-d8d2-4f28-8f02-e5a502ea854d&quot;
   }
 }</component>
@@ -69,30 +77,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;HTTP Request.generated-requests | #93.executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.GplxBeApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;phucthanh&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Research/demo&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.OllamaClient.executor": "Run",
+    "HTTP Request.generated-requests | #93.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.GplxBeApplication.executor": "Run",
+    "git-widget-placeholder": "phucthanh",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/CD Web/PharmacitySystem/Backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\DoAnTotNghiep\Code\Driver-License\GPLX_Final\gplx-be\src\main\java\com\demo\controllers" />
+      <recent name="D:\DoAnTotNghiep\Code\Driver-License\GPLX_Final\gplx-be\src\main\java\com\demo\helpers" />
       <recent name="D:\DoAnTotNghiep\github\gplx\gplx-be\src\main\resources\static\assets\images" />
       <recent name="D:\DoAnTotNghiep\github\gplx\gplx-be\src\main\java\com\demo\services" />
     </key>
@@ -103,6 +114,19 @@
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.GplxBeApplication">
+    <configuration name="OllamaClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.demo.helpers.OllamaClient" />
+      <module name="gplx-be" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.demo.helpers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="generated-requests | #93" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#93" index="93" runType="Run single request">
       <method v="2" />
     </configuration>
@@ -116,6 +140,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.OllamaClient" />
         <item itemvalue="HTTP Request.generated-requests | #93" />
       </list>
     </recent_temporary>
@@ -176,6 +201,12 @@
       <workItem from="1749452162942" duration="1247000" />
       <workItem from="1749489541458" duration="5048000" />
       <workItem from="1749537760544" duration="5157000" />
+      <workItem from="1749570154933" duration="11858000" />
+      <workItem from="1749628851517" duration="5289000" />
+      <workItem from="1749644574314" duration="728000" />
+      <workItem from="1749661789372" duration="3421000" />
+      <workItem from="1749728315412" duration="5816000" />
+      <workItem from="1749826114738" duration="37000" />
     </task>
     <servers />
   </component>

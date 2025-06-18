@@ -54,15 +54,13 @@
                     <td>{{test.description}}</td>
                     <td>{{test.numberOfQuestions}}</td>
                     <td>{{test.time}} phút</td>
-
-
                     <td>
                         <span *ngIf="test.status" class="position-label green">Khả dụng</span>
                         <span *ngIf="!test.status" class="position-label red">Không khả dụng</span>
                     </td>
                     <td class="action-buttons">
                         <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-delete" (click)="deleteTest(test.id)"><i class="fas fa-trash"></i></button>
                     </td>
 
                 </tr>
@@ -120,6 +118,10 @@
                             required>
                     </div>
                     <div class="mb-3">
+                        <label for="testTime" class="form-label">Điểm đạt</label>
+                        <input type="number" class="form-control" id="testTime" [(ngModel)]="passedScore" name="passedScore" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="testType" class="form-label">Loại</label>
                         <select class="form-select" id="testType" [(ngModel)]="testType" name="testType" required>
                             <option value="-1">Chọn loại</option>
@@ -153,7 +155,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let question of filteredQuestions">
-                                        <td>{{ question.content }}</td>
+                                        <td>{{question.id}}-{{ question.content }}</td>
                                         <td>
                                             <button type="button" class="btn btn-primary btn-sm"
                                                 (click)="addQuestionToTest(question)">
@@ -178,7 +180,7 @@
                                 <tbody>
                                     <!-- Hiển thị câu hỏi đã chọn -->
                                     <tr *ngFor="let question of selectedQuestions">
-                                        <td>{{ question.content }}</td>
+                                        <td>{{question.id}}-{{ question.content }}</td>
                                         <td>
                                             <button type="button" class="btn btn-danger btn-sm"
                                                 (click)="removeQuestionFromTest(question)">

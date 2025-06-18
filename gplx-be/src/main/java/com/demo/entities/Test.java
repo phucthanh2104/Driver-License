@@ -41,7 +41,7 @@ public class Test {
     private List<ChapterSimulator> chapterSimulators;
 
 
-    @OneToMany(mappedBy = "test", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TestDetails> testDetails;
 
     public long getId() {
