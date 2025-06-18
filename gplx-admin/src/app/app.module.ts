@@ -19,6 +19,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Module cho Confi
 import { ToastModule } from 'primeng/toast'; // Module cho Toast
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TruncatePipe } from './service/truncate.pipe.service';
+import { SimualtorService } from './service/simulator.service';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { TruncatePipe } from './service/truncate.pipe.service';
     ConfirmationService,
     MessageService,
     TruncatePipe, 
+    SimualtorService
   ],
   bootstrap: [AppComponent],
 })

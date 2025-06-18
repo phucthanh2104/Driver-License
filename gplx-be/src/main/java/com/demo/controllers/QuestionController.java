@@ -3,6 +3,7 @@ package com.demo.controllers;
 import com.demo.dtos.QuestionDTO;
 import com.demo.entities.Question;
 import com.demo.services.QuestionService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -183,8 +184,16 @@ public class QuestionController {
                 throw new IllegalArgumentException("Không tìm thấy câu hỏi với ID: " + id);
             }
 
+            // THÊM: Kiểm tra flag removeImage từ JSON
+            JsonNode jsonNode = objectMapper.readTree(questionDTOJson);
+            boolean shouldRemoveImage = jsonNode.has("removeImage") && jsonNode.get("removeImage").asBoolean();
+
             // Xử lý ảnh nếu có
-            if (image != null && !image.isEmpty()) {
+            if (shouldRemoveImage) {
+                // THÊM: Nếu yêu cầu xóa hình ảnh
+                questionDTO.setImage(null);
+                System.out.println("Xóa hình ảnh cho câu hỏi ID: " + id);
+            } else if (image != null && !image.isEmpty()) {
                 // Định nghĩa hai thư mục lưu ảnh
                 String resourceDir = new File("src/main/resources/static/assets/images/").getAbsolutePath();
                 String targetDir = new File("target/classes/static/assets/images/").getAbsolutePath();

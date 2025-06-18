@@ -44,48 +44,80 @@ export class TestComponent implements OnInit {
     this.questionService.findAll().then((res) => {
       console.log('Question List:', res);
       this.questionList = res;
+      // Khởi tạo filteredQuestions ban đầu
       this.filteredQuestions = [...this.questionList];
-      this.cdr.detectChanges(); // Cập nhật giao diện
+      this.cdr.detectChanges();
     });
   }
 
   filterQuestions() {
     console.log('Search Term:', this.searchTerm);
-    console.log('Question List:', this.questionList);
+    console.log('Question List Length:', this.questionList.length);
 
-    if (!this.searchTerm) {
-      this.filteredQuestions = [...this.questionList];
-      console.log('Filtered Questions (empty search):', this.filteredQuestions);
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      // Nếu không có từ khóa tìm kiếm, hiển thị tất cả câu hỏi trừ những câu đã chọn
+      this.filteredQuestions = this.questionList.filter(
+        (question) =>
+          !this.selectedQuestions.some(
+            (selected) => selected.id === question.id
+          )
+      );
+      console.log(
+        'Filtered Questions (empty search):',
+        this.filteredQuestions.length
+      );
     } else {
       const searchTermLower = this.searchTerm.toLowerCase().trim();
 
       this.filteredQuestions = this.questionList
         .filter((question) => {
+          // Kiểm tra xem câu hỏi đã được chọn chưa
+          const isAlreadySelected = this.selectedQuestions.some(
+            (selected) => selected.id === question.id
+          );
+          if (isAlreadySelected) return false;
+
+          // Tìm kiếm theo ID và content
           const content = question.content?.toLowerCase() || '';
           const id = question.id?.toString() || '';
           const contentMatch = content.includes(searchTermLower);
           const idMatch = id.includes(searchTermLower);
-          console.log(
-            `Question ID: ${question.id}, Content: ${content}, Content Match: ${contentMatch}, ID Match: ${idMatch}`
-          );
+
           return contentMatch || idMatch;
         })
         .sort((a, b) => {
+          const searchTermLower = this.searchTerm.toLowerCase().trim();
+          const idA = a.id?.toString() || '';
+          const idB = b.id?.toString() || '';
           const contentA = a.content?.toLowerCase() || '';
           const contentB = b.content?.toLowerCase() || '';
-          const startsWithA = contentA.startsWith(searchTermLower);
-          const startsWithB = contentB.startsWith(searchTermLower);
-          if (startsWithA && !startsWithB) return -1;
-          if (!startsWithA && startsWithB) return 1;
+
+          const idMatchA = idA.includes(searchTermLower);
+          const idMatchB = idB.includes(searchTermLower);
+          const contentStartsA = contentA.startsWith(searchTermLower);
+          const contentStartsB = contentB.startsWith(searchTermLower);
+
+          // Ưu tiên: ID khớp > Content bắt đầu bằng từ khóa > Content chứa từ khóa
+          if (idMatchA && !idMatchB) return -1;
+          if (!idMatchA && idMatchB) return 1;
+          if (contentStartsA && !contentStartsB) return -1;
+          if (!contentStartsA && contentStartsB) return 1;
+
           return 0;
         });
 
-      console.log('Filtered Questions:', this.filteredQuestions);
+      console.log(
+        'Filtered Questions after search:',
+        this.filteredQuestions.length
+      );
     }
 
-    this.cdr.detectChanges(); // Ép cập nhật giao diện
+    this.cdr.detectChanges();
   }
-
+  onSearchQuestions(event: any) {
+    this.searchTerm = event.target.value;
+    this.filterQuestions();
+  }
   // Các phương thức khác giữ nguyên, chỉ thêm cdr.detectChanges() nếu cần
   findAll() {
     this.testService.findAllTest().then((res) => {
@@ -154,9 +186,8 @@ export class TestComponent implements OnInit {
   addQuestionToTest(question: any) {
     if (!this.selectedQuestions.some((q) => q.id === question.id)) {
       this.selectedQuestions.push(question);
-      this.filteredQuestions = this.filteredQuestions.filter(
-        (q) => q.id !== question.id
-      );
+      // Gọi lại filterQuestions để loại bỏ câu hỏi đã chọn khỏi danh sách
+      this.filterQuestions();
       this.cdr.detectChanges();
     }
   }
@@ -165,9 +196,8 @@ export class TestComponent implements OnInit {
     const index = this.selectedQuestions.findIndex((q) => q.id === question.id);
     if (index > -1) {
       this.selectedQuestions.splice(index, 1);
-      if (!this.filteredQuestions.some((q) => q.id === question.id)) {
-        this.filteredQuestions.push(question);
-      }
+      // Gọi lại filterQuestions để thêm lại câu hỏi vào danh sách tìm kiếm
+      this.filterQuestions();
       this.cdr.detectChanges();
     }
   }
@@ -239,12 +269,15 @@ export class TestComponent implements OnInit {
     this.testTitle = '';
     this.testDescription = '';
     this.testTime = null;
+    this.passedScore = null;
     this.testType = '';
     this.rankId = null;
     this.selectedQuestions = [];
     this.selectedLabels = [];
     this.newLabel = '';
-    this.findAllQuestion();
+    this.searchTerm = ''; // Reset search term
+    // Khôi phục lại danh sách câu hỏi ban đầu
+    this.filteredQuestions = [...this.questionList];
     this.cdr.detectChanges();
   }
 
