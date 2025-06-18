@@ -33,7 +33,11 @@ export class QuestionService {
     );
   }
 
-  async update(id: number,questionData: any,imageFile: File | null): Promise<any> {
+  async update(
+    id: number,
+    questionData: any,
+    imageFile: File | null
+  ): Promise<any> {
     try {
       const formData = new FormData();
       // Thêm questionData dưới dạng JSON string
@@ -68,9 +72,9 @@ export class QuestionService {
         rankA: questionDTO.isCritical || false, // isCritical tương ứng với rankA
         failed: questionDTO.failed || false, // Mặc định là false nếu không có
         answers: questionDTO.answers.map((answer: any) => ({
-          content: answer.text,
+          content: answer.content,
           status: answer.status || true, // Mặc định là true nếu không có
-          correct: answer.isCorrect,
+          correct: answer.correct, // Sử dụng 'correct' thay vì 'isCorrect'
         })),
       })
     );

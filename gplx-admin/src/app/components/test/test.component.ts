@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { QuestionService } from 'src/app/service/question.service';
 import { RankService } from 'src/app/service/rank.service';
 import { TestService } from 'src/app/service/test.service';
-
 
 @Component({
   selector: 'app-root',
@@ -22,15 +21,17 @@ export class TestComponent implements OnInit {
   testTitle: string = '';
   testDescription: string = '';
   testTime: number | null = null;
+  passedScore: number | null = null;
   testType: string = '';
-  rankId: number | null = null; // Thêm biến rankId để lưu giá trị từ select
+  rankId: number | null = null;
   searchTerm: string = '';
   filteredQuestions: any[] = [];
 
   constructor(
     private testService: TestService,
     private rankService: RankService,
-    private questionService: QuestionService
+    private questionService: QuestionService,
+    private cdr: ChangeDetectorRef // Thêm ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -39,41 +40,73 @@ export class TestComponent implements OnInit {
     this.findAllQuestion();
   }
 
-  findAll() {
-    this.testService.findAllTest().then((res) => {
-      console.log(res);
-      this.listTestOriginal = res;
-      this.listTest = [...this.listTestOriginal];
-    });
-  }
-
   findAllQuestion() {
     this.questionService.findAll().then((res) => {
-      console.log(res);
+      console.log('Question List:', res);
       this.questionList = res;
       this.filteredQuestions = [...this.questionList];
+      this.cdr.detectChanges(); // Cập nhật giao diện
     });
   }
 
   filterQuestions() {
+    console.log('Search Term:', this.searchTerm);
+    console.log('Question List:', this.questionList);
+
     if (!this.searchTerm) {
       this.filteredQuestions = [...this.questionList];
-      return;
+      console.log('Filtered Questions (empty search):', this.filteredQuestions);
+    } else {
+      const searchTermLower = this.searchTerm.toLowerCase().trim();
+
+      this.filteredQuestions = this.questionList
+        .filter((question) => {
+          const content = question.content?.toLowerCase() || '';
+          const id = question.id?.toString() || '';
+          const contentMatch = content.includes(searchTermLower);
+          const idMatch = id.includes(searchTermLower);
+          console.log(
+            `Question ID: ${question.id}, Content: ${content}, Content Match: ${contentMatch}, ID Match: ${idMatch}`
+          );
+          return contentMatch || idMatch;
+        })
+        .sort((a, b) => {
+          const contentA = a.content?.toLowerCase() || '';
+          const contentB = b.content?.toLowerCase() || '';
+          const startsWithA = contentA.startsWith(searchTermLower);
+          const startsWithB = contentB.startsWith(searchTermLower);
+          if (startsWithA && !startsWithB) return -1;
+          if (!startsWithA && startsWithB) return 1;
+          return 0;
+        });
+
+      console.log('Filtered Questions:', this.filteredQuestions);
     }
-    this.filteredQuestions = this.questionList.filter(
-      (question) =>
-        question.content
-          ?.toLowerCase()
-          .includes(this.searchTerm.toLowerCase()) ||
-        (question.id?.toString() &&
-          question.id.toString().includes(this.searchTerm))
-    );
+
+    this.cdr.detectChanges(); // Ép cập nhật giao diện
+  }
+
+  // Các phương thức khác giữ nguyên, chỉ thêm cdr.detectChanges() nếu cần
+  findAll() {
+    this.testService.findAllTest().then((res) => {
+      console.log('List Test:', res);
+      this.listTestOriginal = res;
+      this.listTest = [...this.listTestOriginal];
+      this.cdr.detectChanges();
+    });
+  }
+
+  findListRank() {
+    this.rankService.findAll().then((res) => {
+      this.listRank = res;
+      console.log('List Rank:', res);
+      this.cdr.detectChanges();
+    });
   }
 
   findTest(evt: any) {
     const rankId = evt.target.value;
     console.log('Rank ID:', rankId);
-
     if (rankId === '-1') {
       this.listTest = [...this.listTestOriginal];
     } else {
@@ -82,50 +115,40 @@ export class TestComponent implements OnInit {
         .then((res) => {
           console.log('Kết quả từ API:', res);
           this.listTest = res;
+          this.cdr.detectChanges();
         })
         .catch((error) => {
           console.error('Lỗi khi lấy danh sách đề thi:', error);
           this.listTest = [];
+          this.cdr.detectChanges();
         });
     }
-  }
-
-  findListRank() {
-    this.rankService.findAll().then((res) => {
-      this.listRank = res;
-      console.log(res);
-    });
   }
 
   findTestTitle(evt: any) {
     const searchTerm = evt.target.value.toLowerCase().trim();
     console.log('Từ khóa tìm kiếm:', searchTerm);
-
     this.listTest = this.listTestOriginal.filter((test) => {
       const testTitle = test.title?.toLowerCase() || '';
       const testDescription = test.description?.toLowerCase() || '';
-
       const searchNumberMatch = searchTerm.match(/\d+/);
       const searchNumber = searchNumberMatch ? searchNumberMatch[0] : null;
-
       const testNumberMatch = testTitle.match(/\d+/);
       const testNumber = testNumberMatch ? testNumberMatch[0] : null;
-
       if (!searchNumber) {
         return (
           testTitle.includes(searchTerm) || testDescription.includes(searchTerm)
         );
       }
-
       if (searchNumber && testNumber) {
         return (
           (testNumber === searchNumber && testTitle.includes('đề')) ||
           testDescription.includes(searchTerm)
         );
       }
-
       return false;
     });
+    this.cdr.detectChanges();
   }
 
   addQuestionToTest(question: any) {
@@ -134,6 +157,7 @@ export class TestComponent implements OnInit {
       this.filteredQuestions = this.filteredQuestions.filter(
         (q) => q.id !== question.id
       );
+      this.cdr.detectChanges();
     }
   }
 
@@ -144,6 +168,7 @@ export class TestComponent implements OnInit {
       if (!this.filteredQuestions.some((q) => q.id === question.id)) {
         this.filteredQuestions.push(question);
       }
+      this.cdr.detectChanges();
     }
   }
 
@@ -151,11 +176,13 @@ export class TestComponent implements OnInit {
     if (this.newLabel && !this.selectedLabels.includes(this.newLabel)) {
       this.selectedLabels.push(this.newLabel);
       this.newLabel = '';
+      this.cdr.detectChanges();
     }
   }
 
   removeLabelFromTest(label: string) {
     this.selectedLabels = this.selectedLabels.filter((l) => l !== label);
+    this.cdr.detectChanges();
   }
 
   saveTest() {
@@ -169,24 +196,23 @@ export class TestComponent implements OnInit {
       alert('Vui lòng điền đầy đủ thông tin tiêu đề, thời gian, loại và hạng!');
       return;
     }
-
     const testData: any = {
       title: this.testTitle,
       description: this.testDescription,
       time: this.testTime,
       type: this.testType,
       status: true,
-      rank: this.rankId, // Lấy rankId từ giao diện
-      isTest: true, // Có thể thay đổi dựa trên logic nếu cần
+      passedScore: this.passedScore || 0,
+      rank: this.rankId,
+      isTest: true,
       numberOfQuestions: this.selectedQuestions.length,
       testDetails: this.selectedQuestions.map((question) => ({
         testId: null,
         chapterId: null,
-        question: { id: question.id } ,
+        question: { id: question.id },
         status: true,
       })),
     };
-
     console.log('Dữ liệu bộ đề:', testData);
     this.testService
       .save(testData)
@@ -201,7 +227,7 @@ export class TestComponent implements OnInit {
           modal.hide();
         }
         this.resetTestForm();
-        this.findAll(); // Làm mới danh sách sau khi lưu
+        this.findAll();
       })
       .catch((error) => {
         console.error('Lỗi khi lưu bộ đề:', error);
@@ -218,6 +244,23 @@ export class TestComponent implements OnInit {
     this.selectedQuestions = [];
     this.selectedLabels = [];
     this.newLabel = '';
-    this.findAllQuestion(); // Khôi phục lại danh sách câu hỏi ban đầu
+    this.findAllQuestion();
+    this.cdr.detectChanges();
+  }
+
+  deleteTest(testId: any) {
+    if (confirm('Bạn có chắc chắn muốn xóa bộ đề này?')) {
+      this.testService
+        .delete(testId)
+        .then((response) => {
+          console.log('Kết quả xóa:', response);
+          alert('Xóa bộ đề thành công!');
+          this.findAll();
+        })
+        .catch((error) => {
+          console.error('Lỗi khi xóa bộ đề:', error);
+          alert('Có lỗi xảy ra khi xóa bộ đề: ' + error.message);
+        });
+    }
   }
 }

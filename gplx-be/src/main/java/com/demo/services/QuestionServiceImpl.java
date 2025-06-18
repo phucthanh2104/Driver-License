@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -254,89 +255,182 @@ public class QuestionServiceImpl implements QuestionService {
         return questionDTO;
     }
 
-    @Override
-    @Transactional
-    public QuestionDTO updateQuestion(QuestionDTO questionDTO) throws IOException {
-        // Tìm câu hỏi hiện có
-        Question question = questionRepository.findByIdWithAnswers(questionDTO.getId());
-        if (question == null) {
-            throw new IllegalArgumentException("Không tìm thấy câu hỏi với ID: " + questionDTO.getId());
+//    @Override
+//    @Transactional
+//    public QuestionDTO updateQuestion(QuestionDTO questionDTO) throws IOException {
+//        // Tìm câu hỏi hiện có
+//        Question question = questionRepository.findByIdWithAnswers(questionDTO.getId());
+//        if (question == null) {
+//            throw new IllegalArgumentException("Không tìm thấy câu hỏi với ID: " + questionDTO.getId());
+//        }
+//
+//        // Cập nhật các field của câu hỏi
+//        question.setContent(questionDTO.getContent());
+//        question.setImage(questionDTO.getImage());
+//        question.setExplain(questionDTO.getExplain());
+//        question.setStatus(questionDTO.isStatus());
+//        question.setRankA(questionDTO.isRankA());
+//        question.setIsFailed(questionDTO.isFailed());
+//
+//        // Lấy danh sách câu trả lời hiện có
+//        List<Answer> existingAnswers = question.getAnswers();
+//        List<AnswerDTO> updatedAnswers = questionDTO.getAnswers();
+//
+//        // Tạo danh sách để lưu các câu trả lời sau khi cập nhật
+//        List<Answer> newAnswerList = new ArrayList<>();
+//
+//        // Duyệt qua danh sách câu trả lời từ DTO
+//        for (AnswerDTO answerDTO : updatedAnswers) {
+//            // Kiểm tra content không được null hoặc rỗng
+//            if (answerDTO.getContent() == null || answerDTO.getContent().trim().isEmpty()) {
+//                throw new IllegalArgumentException("Nội dung câu trả lời không được để trống (ID: " + (answerDTO.getId() != null ? answerDTO.getId() : "mới") + ")");
+//            }
+//
+//            if (answerDTO.getId() != null) {
+//                // Nếu câu trả lời có ID, tìm và cập nhật
+//                Answer existingAnswer = existingAnswers.stream()
+//                        .filter(answer -> answer.getId() == answerDTO.getId())
+//                        .findFirst()
+//                        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu trả lời với ID: " + answerDTO.getId()));
+//
+//                // Cập nhật các field của câu trả lời
+//                existingAnswer.setContent(answerDTO.getContent());
+//                existingAnswer.setCorrect(answerDTO.isCorrect());
+//                existingAnswer.setStatus(answerDTO.isStatus());
+//                newAnswerList.add(existingAnswer);
+//            } else {
+//                // Tạo mới câu trả lời
+//                Answer newAnswer = new Answer();
+//                newAnswer.setContent(answerDTO.getContent());
+//                newAnswer.setCorrect(answerDTO.isCorrect());
+//                newAnswer.setStatus(answerDTO.isStatus());
+//                newAnswer.setQuestion(question);
+//                newAnswerList.add(newAnswer);
+//            }
+//        }
+//
+//        // Xóa các câu trả lời không còn trong danh sách gửi lên
+//        existingAnswers.removeIf(answer -> newAnswerList.stream().noneMatch(newAnswer -> newAnswer.getId() != null && newAnswer.getId() == answer.getId()));
+//        // Thêm các câu trả lời mới vào danh sách hiện có
+//        existingAnswers.addAll(newAnswerList.stream()
+//                .filter(answer -> answer.getId() == null)
+//                .collect(Collectors.toList()));
+//
+//        // Lưu câu hỏi đã cập nhật
+//        Question updatedQuestion = questionRepository.save(question);
+//
+//        // Map sang QuestionDTO để trả về
+//        QuestionDTO updatedQuestionDTO = modelMapper.map(updatedQuestion, QuestionDTO.class);
+//        List<AnswerDTO> answerDTOs = updatedQuestion.getAnswers().stream().map(answer -> {
+//            AnswerDTO aDto = new AnswerDTO();
+//            aDto.setId(answer.getId());
+//            aDto.setContent(answer.getContent());
+//            aDto.setCorrect(answer.isCorrect());
+//            aDto.setStatus(answer.isStatus());
+//            return aDto;
+//        }).collect(Collectors.toList());
+//
+//        updatedQuestionDTO.setAnswers(answerDTOs);
+//
+//        // Lấy ra id của đáp án đúng (nếu có)
+//        updatedQuestion.getAnswers().stream()
+//                .filter(Answer::isCorrect)
+//                .findFirst()
+//                .ifPresent(correct -> updatedQuestionDTO.setCorrectAnswer(correct.getId()));
+//
+//        return updatedQuestionDTO;
+//    }
+@Override
+@Transactional
+public QuestionDTO updateQuestion(QuestionDTO questionDTO) throws IOException {
+    // Tìm câu hỏi hiện có
+    Question question = questionRepository.findByIdWithAnswers(questionDTO.getId());
+    if (question == null) {
+        throw new IllegalArgumentException("Không tìm thấy câu hỏi với ID: " + questionDTO.getId());
+    }
+
+    // Cập nhật các field cơ bản
+    question.setContent(questionDTO.getContent());
+    question.setImage(questionDTO.getImage());
+    question.setExplain(questionDTO.getExplain());
+    question.setStatus(questionDTO.isStatus());
+    question.setRankA(questionDTO.isRankA());
+    question.setIsFailed(questionDTO.isFailed());
+
+    // Lấy danh sách câu trả lời hiện tại
+    List<Answer> existingAnswers = question.getAnswers();
+    List<AnswerDTO> updatedAnswers = questionDTO.getAnswers();
+    List<Answer> newAnswerList = new ArrayList<>();
+
+    for (AnswerDTO answerDTO : updatedAnswers) {
+        if (answerDTO.getContent() == null || answerDTO.getContent().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nội dung câu trả lời không được để trống (ID: " +
+                    (answerDTO.getId() != null ? answerDTO.getId() : "mới") + ")");
         }
 
-        // Cập nhật các field của câu hỏi
-        question.setContent(questionDTO.getContent());
-        question.setImage(questionDTO.getImage());
-        question.setExplain(questionDTO.getExplain());
-        question.setStatus(questionDTO.isStatus());
-        question.setRankA(questionDTO.isRankA());
-        question.setIsFailed(questionDTO.isFailed());
+        if (answerDTO.getId() != null) {
+            // Chỉ cập nhật nếu ID có thật trong danh sách hiện tại
+            Optional<Answer> existingAnswerOpt = existingAnswers.stream()
+                    .filter(answer -> answer.getId().equals(answerDTO.getId()))
+                    .findFirst();
 
-        // Lấy danh sách câu trả lời hiện có
-        List<Answer> existingAnswers = question.getAnswers();
-        List<AnswerDTO> updatedAnswers = questionDTO.getAnswers();
-
-        // Tạo danh sách để lưu các câu trả lời sau khi cập nhật
-        List<Answer> newAnswerList = new ArrayList<>();
-
-        // Duyệt qua danh sách câu trả lời từ DTO
-        for (AnswerDTO answerDTO : updatedAnswers) {
-            // Kiểm tra content không được null hoặc rỗng
-            if (answerDTO.getContent() == null || answerDTO.getContent().trim().isEmpty()) {
-                throw new IllegalArgumentException("Nội dung câu trả lời không được để trống (ID: " + (answerDTO.getId() != null ? answerDTO.getId() : "mới") + ")");
-            }
-
-            if (answerDTO.getId() != null) {
-                // Nếu câu trả lời có ID, tìm và cập nhật
-                Answer existingAnswer = existingAnswers.stream()
-                        .filter(answer -> answer.getId() == answerDTO.getId())
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy câu trả lời với ID: " + answerDTO.getId()));
-
-                // Cập nhật các field của câu trả lời
+            if (existingAnswerOpt.isPresent()) {
+                Answer existingAnswer = existingAnswerOpt.get();
                 existingAnswer.setContent(answerDTO.getContent());
                 existingAnswer.setCorrect(answerDTO.isCorrect());
                 existingAnswer.setStatus(answerDTO.isStatus());
                 newAnswerList.add(existingAnswer);
             } else {
-                // Tạo mới câu trả lời
-                Answer newAnswer = new Answer();
-                newAnswer.setContent(answerDTO.getContent());
-                newAnswer.setCorrect(answerDTO.isCorrect());
-                newAnswer.setStatus(answerDTO.isStatus());
-                newAnswer.setQuestion(question);
-                newAnswerList.add(newAnswer);
+                throw new IllegalArgumentException("Không tìm thấy câu trả lời với ID: " + answerDTO.getId()
+                        + " trong câu hỏi ID: " + question.getId());
             }
+        } else {
+            // Tạo mới câu trả lời
+            Answer newAnswer = new Answer();
+            newAnswer.setContent(answerDTO.getContent());
+            newAnswer.setCorrect(answerDTO.isCorrect());
+            newAnswer.setStatus(answerDTO.isStatus());
+            newAnswer.setQuestion(question);
+            newAnswerList.add(newAnswer);
         }
-
-        // Xóa các câu trả lời không còn trong danh sách gửi lên
-        existingAnswers.removeIf(answer -> newAnswerList.stream().noneMatch(newAnswer -> newAnswer.getId() != null && newAnswer.getId() == answer.getId()));
-        // Thêm các câu trả lời mới vào danh sách hiện có
-        existingAnswers.addAll(newAnswerList.stream()
-                .filter(answer -> answer.getId() == null)
-                .collect(Collectors.toList()));
-
-        // Lưu câu hỏi đã cập nhật
-        Question updatedQuestion = questionRepository.save(question);
-
-        // Map sang QuestionDTO để trả về
-        QuestionDTO updatedQuestionDTO = modelMapper.map(updatedQuestion, QuestionDTO.class);
-        List<AnswerDTO> answerDTOs = updatedQuestion.getAnswers().stream().map(answer -> {
-            AnswerDTO aDto = new AnswerDTO();
-            aDto.setId(answer.getId());
-            aDto.setContent(answer.getContent());
-            aDto.setCorrect(answer.isCorrect());
-            aDto.setStatus(answer.isStatus());
-            return aDto;
-        }).collect(Collectors.toList());
-
-        updatedQuestionDTO.setAnswers(answerDTOs);
-
-        // Lấy ra id của đáp án đúng (nếu có)
-        updatedQuestion.getAnswers().stream()
-                .filter(Answer::isCorrect)
-                .findFirst()
-                .ifPresent(correct -> updatedQuestionDTO.setCorrectAnswer(correct.getId()));
-
-        return updatedQuestionDTO;
     }
+
+    // Xóa các câu trả lời bị loại bỏ
+    existingAnswers.removeIf(oldAnswer ->
+            newAnswerList.stream().noneMatch(updated ->
+                    updated.getId() != null && updated.getId().equals(oldAnswer.getId()))
+    );
+
+    // Thêm câu trả lời mới
+    List<Answer> answersToAdd = newAnswerList.stream()
+            .filter(answer -> answer.getId() == null)
+            .collect(Collectors.toList());
+
+    existingAnswers.addAll(answersToAdd);
+
+    // Lưu lại câu hỏi
+    Question updatedQuestion = questionRepository.save(question);
+
+    // Map lại DTO trả về
+    QuestionDTO updatedQuestionDTO = modelMapper.map(updatedQuestion, QuestionDTO.class);
+    List<AnswerDTO> answerDTOs = updatedQuestion.getAnswers().stream().map(answer -> {
+        AnswerDTO aDto = new AnswerDTO();
+        aDto.setId(answer.getId());
+        aDto.setContent(answer.getContent());
+        aDto.setCorrect(answer.isCorrect());
+        aDto.setStatus(answer.isStatus());
+        return aDto;
+    }).collect(Collectors.toList());
+
+    updatedQuestionDTO.setAnswers(answerDTOs);
+
+    // Cập nhật lại ID đáp án đúng
+    updatedQuestion.getAnswers().stream()
+            .filter(Answer::isCorrect)
+            .findFirst()
+            .ifPresent(correct -> updatedQuestionDTO.setCorrectAnswer(correct.getId()));
+
+    return updatedQuestionDTO;
+}
+
 }

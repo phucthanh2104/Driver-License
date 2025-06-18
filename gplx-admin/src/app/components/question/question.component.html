@@ -31,13 +31,23 @@
         <tbody>
             <ng-container *ngFor="let q of listQuestion">
                 <tr>
-                    <td>{{q.id}}</td>
-                    <td><span class="position-label green1">{{q.content}}</span></td>
+                    <td style="width: 10px;">{{q.id}}</td>
+                    <td>
+                        <span class="position-label green1" *ngIf="q.content.length > 80">
+                            {{ q.content.slice(0, 80) }}...
+                        </span>
+                        <span class="position-label green1" *ngIf="q.content.length <= 80">
+                            {{ q.content }}
+                        </span>                 </td>
                     <td>
                         <span *ngIf="q.failed" class="position-label red">Điểm liệt</span>
                         <span *ngIf="!q.failed" class="position-label green">Kiến thức</span>
                     </td>
-                    <td><img [src]="linkImage + q.image" alt="Uploaded Image" class="img-fluid" style="width: 80px; height: 80px;"></td>
+                    <td>
+                        <img *ngIf="q.image" [src]="linkImage + q.image" alt="Uploaded Image" class="img-fluid"
+                            style="width: 90px; height: 60px;">
+                        <span *ngIf="!q.image" class="text-muted">Không</span>
+                    </td>
                     <td>
                         <span *ngIf="q.status" class="position-label green">Khả dụng</span>
                         <span *ngIf="!q.status" class="position-label red">Không khả dụng</span>
@@ -59,10 +69,10 @@
         </tbody>
     </table>
     <div class="pagination-container">
-        <div>Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ currentPage * pageSize > totalEntries ? totalEntries :
-            currentPage * pageSize }} of {{ totalEntries }} entries</div>
+        <div>Hiển thị từ {{ (currentPage - 1) * pageSize + 1 }} đến {{ currentPage * pageSize > totalEntries ? totalEntries :
+            currentPage * pageSize }} của {{ totalEntries }} câu hỏi</div>
         <nav aria-label="Page navigation">
-            <ul class="pagination">
+            <!-- <ul class="pagination">
                 <li class="page-item" [ngClass]="{'disabled': currentPage === 1}">
                     <a class="page-link" href="#" (click)="previousPage()">Previous</a>
                 </li>
@@ -72,7 +82,7 @@
                 <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages}">
                     <a class="page-link" href="#" (click)="nextPage()">Next</a>
                 </li>
-            </ul>
+            </ul> -->
         </nav>
     </div>
 </div>
@@ -82,9 +92,7 @@
     <div class="modal-dialog" style="max-width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="questionModalLabel">
-                    {{ isEditMode ? 'Chỉnh sửa câu hỏi' : 'Thêm câu hỏi mới' }}
-                </h5>
+                <h5 class="modal-title" id="questionModalLabel">Chỉnh sửa câu hỏi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -140,9 +148,75 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" (click)="saveQuestion()">
-                    {{ isEditMode ? 'Cập nhật' : 'Lưu' }}
-                </button>
+                <button type="button" class="btn btn-primary" (click)="saveQuestion()">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm câu hỏi mới -->
+
+<div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addQuestionModalLabel">Thêm câu hỏi mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addQuestionForm">
+                    <div class="mb-3">
+                        <label for="newQuestionContent" class="form-label"><b>Nội dung câu hỏi</b></label>
+                        <textarea class="form-control" id="newQuestionContent" [(ngModel)]="newQuestionContent"
+                            name="newQuestionContent" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newImageUpload" class="form-label">Tải lên hình ảnh (tùy chọn)</label>
+                        <input type="file" class="form-control" id="newImageUpload" accept="image/*"
+                            (change)="onNewImageUpload($event)">
+                    </div>
+                    <div class="mb-3" *ngIf="newImageUrl">
+                        <label class="form-label">Hình ảnh hiện tại</label><br>
+                        <img [src]="newImageUrl" alt="Uploaded Image" class="img-fluid"
+                            style="width: 450px; height: 200px;">
+                        <button type="button" class="btn btn-danger btn-sm mt-2" (click)="removeNewImage()">Xóa hình
+                            ảnh</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newExplain" class="form-label"><b>Giải thích</b></label>
+                        <textarea class="form-control" id="newExplain" [(ngModel)]="newExplain" name="newExplain"
+                            rows="2" required></textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="newIsCritical" [(ngModel)]="newFailed"
+                            name="newIsCritical">
+                        <label class="form-check-label" for="newIsCritical">
+                            Câu điểm liệt
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" (click)="addNewAnswerField()">Thêm câu trả
+                            lời</button>
+                    </div>
+                    <div *ngFor="let answer of newAnswers; let i = index">
+                        <div class="input-group mb-3">
+                            <div class="input-group-text">
+                                <input class="form-check-input mt-0" type="checkbox" [(ngModel)]="answer.correct"
+                                    [name]="'newAnswerCorrect' + i" [id]="'newAnswer' + i"
+                                    (change)="onNewAnswerCorrectChange(i)">
+                            </div>
+                            <input type="text" class="form-control" [(ngModel)]="answer.content"
+                                [name]="'newAnswerContent' + i" placeholder="Nhập câu trả lời" required>
+                            <button type="button" class="btn btn-danger" (click)="removeNewAnswerField(i)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" (click)="saveNewQuestion()">Lưu</button>
             </div>
         </div>
     </div>

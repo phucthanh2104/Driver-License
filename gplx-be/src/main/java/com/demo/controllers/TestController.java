@@ -122,7 +122,7 @@ public class TestController {
             return new ResponseEntity<List<TestDTO>>(HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping(value = "addTestDetail", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "addTestDetail", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE) // Đổi tên endpoint
     public ResponseEntity<Object> addTest(@RequestBody TestDTO testDTO) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -136,10 +136,39 @@ public class TestController {
             response.put("message", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            e.printStackTrace();
             response.put("status", "error");
             response.put("test", null);
             response.put("message", "Có lỗi xảy ra khi thêm bài test: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/deleteTest/{id}")
+    public ResponseEntity<Object> deleteTest(@PathVariable("id") Long id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Tạo TestDTO với id để gửi vào service
+            TestDTO testDTO = new TestDTO();
+            testDTO.setId(id);
+
+            // Gọi service để thực hiện xóa mềm
+            TestDTO updatedTestDTO = testService.deleteTest(testDTO);
+
+            if (updatedTestDTO == null) {
+                response.put("status", "error");
+                response.put("test", null);
+                response.put("message", "Không tìm thấy bài test với ID: " + id);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            response.put("status", "success");
+            response.put("test", updatedTestDTO);
+            response.put("message", "Xóa mềm bài test thành công");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", "Có lỗi xảy ra khi xóa bài test: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

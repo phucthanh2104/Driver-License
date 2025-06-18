@@ -71,4 +71,12 @@ public class TestDetailDTO {
         this.passedScore = passedScore;
     }
 
+    public TestDetailDTO(Integer testId, Integer chapterId, QuestionDTO question, int time, int passedScore, boolean status) {
+        this.testId = testId;
+        this.chapterId = chapterId;
+        this.question = question;
+        this.time = time;
+        this.passedScore = passedScore;
+        this.status = status;
+    }
 }

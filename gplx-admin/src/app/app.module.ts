@@ -13,11 +13,12 @@ import { TestService } from './service/test.service';
 import { RankService } from './service/rank.service';
 import { SimulatorComponent } from './components/simulator-test/simulator.component';
 import { SituationComponent } from './components/situation/situation.component';
-import { AddQuestionComponent } from './components/question/add-question.component copy';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Cần cho PrimeNG
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; // Module cho ConfirmDialog
 import { ToastModule } from 'primeng/toast'; // Module cho Toast
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { TruncatePipe } from './service/truncate.pipe.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     TestComponent,
     SimulatorComponent,
     SituationComponent,
-    AddQuestionComponent,
+   
   ],
   imports: [
     BrowserModule,
@@ -45,6 +46,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     RankService,
     ConfirmationService,
     MessageService,
+    TruncatePipe, 
   ],
   bootstrap: [AppComponent],
 })

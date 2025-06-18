@@ -20,4 +20,7 @@ export class TestService {
   async save(test : any): Promise<any> {
     return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/addTestDetail', test));
   }
+  async delete(id : any): Promise<any> {
+    return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/deleteTest/'+id, {}));
+  }
 }
