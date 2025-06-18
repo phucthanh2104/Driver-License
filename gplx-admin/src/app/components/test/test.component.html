@@ -31,7 +31,7 @@
             Search: <input type="text" placeholder="Tìm kiếm bộ đề" (keyup)="findTestTitle($event)">
         </div>
     </div>
-    <table class="table">
+    <table id="basic-datatable" class="table table-striped dt-responsive nowrap w-100">
         <thead>
             <tr>
                 <th><b>#</b></th>
@@ -60,7 +60,8 @@
                     </td>
                     <td class="action-buttons">
                         <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-delete" (click)="deleteTest(test.id)"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-delete" (click)="deleteTest(test.id)"><i
+                                class="fas fa-trash"></i></button>
                     </td>
 
                 </tr>
@@ -119,7 +120,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="testTime" class="form-label">Điểm đạt</label>
-                        <input type="number" class="form-control" id="testTime" [(ngModel)]="passedScore" name="passedScore" required>
+                        <input type="number" class="form-control" id="testTime" [(ngModel)]="passedScore"
+                            name="passedScore" required>
                     </div>
                     <div class="mb-3">
                         <label for="testType" class="form-label">Loại</label>
@@ -143,8 +145,9 @@
                         <!-- Table 1: List of Questions and Labels (Left) -->
                         <div class="flex-fill me-3">
                             <h6>Câu hỏi</h6>
-                            <input type="text" class="form-control mb-2" placeholder="Tìm kiếm câu hỏi"
-                                [(ngModel)]="searchTerm" (ngModelChange)="filterQuestions()">
+                            <input type="text" class="form-control mb-2"
+                                placeholder="Tìm kiếm theo ID hoặc nội dung câu hỏi..." [(ngModel)]="searchTerm"
+                                (keyup)="onSearchQuestions($event)" name="searchTerm">
                             <!-- Bảng câu hỏi -->
                             <table class="table table-striped">
                                 <thead class="table-dark">
@@ -161,6 +164,12 @@
                                                 (click)="addQuestionToTest(question)">
                                                 <i class="fas fa-plus"></i>
                                             </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Hiển thị thông báo nếu không có kết quả -->
+                                    <tr *ngIf="filteredQuestions.length === 0">
+                                        <td colspan="2" class="text-center text-muted">
+                                            {{ searchTerm ? 'Không tìm thấy câu hỏi phù hợp' : 'Không có câu hỏi nào' }}
                                         </td>
                                     </tr>
                                 </tbody>

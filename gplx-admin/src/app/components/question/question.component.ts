@@ -50,6 +50,7 @@ export class QuestionComponent implements OnInit {
   pageSize: number = 10;
   totalEntries: number = 0;
   pageSizes: number[] = [10, 50, 100, 600];
+  listQuestionBackup: any[] = [];
 
   ngOnInit(): void {
     this.findAll();
@@ -59,8 +60,7 @@ export class QuestionComponent implements OnInit {
     this.questionService
       .findAll()
       .then((res) => {
-    
-        this.listQuestionOriginal = res.map((question: any) => {
+        const processedData = res.map((question: any) => {
           if (question.image) {
             question.imageUrl = `${this.baseUrlService.getImageUrl()}/${
               question.image
@@ -70,6 +70,10 @@ export class QuestionComponent implements OnInit {
           }
           return question;
         });
+
+        // Lưu bản sao gốc để tìm kiếm
+        this.listQuestionBackup = [...processedData];
+        this.listQuestionOriginal = [...processedData];
         this.totalEntries = this.listQuestionOriginal.length;
         this.updatePaginatedList();
       })
@@ -77,6 +81,7 @@ export class QuestionComponent implements OnInit {
         console.error('Lỗi khi lấy danh sách câu hỏi:', error);
         this.listQuestion = [];
         this.listQuestionOriginal = [];
+        this.listQuestionBackup = [];
         this.totalEntries = 0;
         this.messageService.add({
           severity: 'error',
@@ -156,6 +161,7 @@ export class QuestionComponent implements OnInit {
   removeImage() {
     this.imageUrl = null;
     this.imageFile = null;
+
     const imageInput = document.getElementById(
       'imageUpload'
     ) as HTMLInputElement;
@@ -331,7 +337,14 @@ export class QuestionComponent implements OnInit {
       status: true,
       rankA: this.failed,
       isFailed: this.failed,
+      // SỬA: Logic xác định xóa hình ảnh
+      removeImage:
+        this.originalImage !== null &&
+        this.imageUrl === null &&
+        this.imageFile === null,
     };
+
+    console.log('Question data to send:', questionData); // Debug log
 
     this.questionService
       .update(this.currentQuestionId!, questionData, this.imageFile)
@@ -508,7 +521,6 @@ export class QuestionComponent implements OnInit {
   }
 
   openEditQuestion(id: number) {
-   
     this.fetchQuestionById(id, (res) => {
       console.log('Dữ liệu câu hỏi để chỉnh sửa:', res);
       this.isEditMode = true;
@@ -550,12 +562,20 @@ export class QuestionComponent implements OnInit {
   searchQuestion(evt: any) {
     const keyWord = evt.target.value.toLowerCase().trim();
     if (keyWord === '') {
-      this.findAll();
+      // Khôi phục dữ liệu gốc từ backup
+      this.listQuestionOriginal = [...this.listQuestionBackup];
+      this.totalEntries = this.listQuestionOriginal.length;
+      this.currentPage = 1;
+      this.updatePaginatedList();
     } else {
-      this.listQuestionOriginal = this.listQuestionOriginal.filter(
+      // Tìm kiếm từ dữ liệu backup (không thay đổi dữ liệu gốc)
+      this.listQuestionOriginal = this.listQuestionBackup.filter(
         (question: any) => {
           const content = question.content?.toLowerCase() || '';
-          return content.includes(keyWord);
+          const id = question.id?.toString() || '';
+
+          // Tìm kiếm theo ID hoặc content
+          return content.includes(keyWord) || id.includes(keyWord);
         }
       );
       this.totalEntries = this.listQuestionOriginal.length;
