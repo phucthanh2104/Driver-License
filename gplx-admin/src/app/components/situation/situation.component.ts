@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { SimualtorService } from 'src/app/service/simulator.service';
 
 declare var $: any;
 
@@ -12,9 +13,11 @@ export class SituationComponent implements OnInit, AfterViewInit, OnDestroy {
   testDescription: string = '';
   testTime: number | null = null;
   testType: string = '';
+  situations : any ={}
+  constructor(private simulatorService: SimualtorService) {}
 
   ngOnInit(): void {
-    console.log('Component initialized');
+    this.findAll();
   }
 
   ngAfterViewInit(): void {
@@ -63,6 +66,14 @@ export class SituationComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch (error) {
       console.error('Error initializing DataTable:', error);
     }
+  }
+
+  findAll() {
+    this.simulatorService.findAll().then((res) => {
+      this.situations = res;
+      console.log(res);
+      
+    });
   }
 
   saveTest(): void {

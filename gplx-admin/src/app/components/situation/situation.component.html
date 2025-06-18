@@ -12,20 +12,20 @@
                     <th><b>#</b></th>
                     <th><b>Tiêu đề</b></th>
                     <th><b>Mô tả</b></th>
-                    <th><b>Thời gian</b></th>
-                    <th><b>Loại</b></th>
+                    <th><b>Hình ảnh</b></th>
+                    <th><b>Thời lượng</b></th>
                     <th><b>Trạng thái</b></th>
                     <th><b>Thao tác</b></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td ><span class="position-label green1">Tình huống giao thông 1</span></td>
-                    <td>Mô tả chi tiết tình huống 1</td>
-                    <td>60 giây</td>
-                    <td>Loại A</td>
-                    <td><span class="badge bg-success">Hoạt động</span></td>
+                <tr *ngFor="let s of situations">
+                    <td>{{s.id}}</td>
+                    <td ><span class="position-label green1">{{s.title}}</span></td>
+                    <td>{{s.description}}</td>
+                    <td><img style="width: 180px; height: 100px;" src="{{s.image}}" alt="{{s.description}}"></td>
+                    <td>{{s.videoLength}}   (s)</td>
+                    <td><span class="badge bg-success">{{s.status == true ? "Hoạt động": "Ngưng"}}</span></td>
                     <td class="action-buttons">
                         <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
