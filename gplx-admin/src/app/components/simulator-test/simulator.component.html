@@ -7,60 +7,61 @@
 <div class="table-container">
     <div class="table-header">
         <div>
-            Bộ đề của hạng xe : 
-            <select (change)="findTest($event)">
-                <option value ="-1">Tất cả</option>
-                <ng-container *ngFor="let lr of listRank">
-                <option [value]="lr.id" >{{lr.id}}-{{lr.name}}</option>
-                </ng-container>
+            Lọc theo hạng:
+            <select class="form-select" style="width: 100px; display: inline-block;" (change)="findTest($event)">
+                <option value="-1">Tất cả</option>
+                <option *ngFor="let rank of listRank" [value]="rank.id">{{ rank.id }}-{{ rank.name }}</option>
             </select>
-           
-
         </div>
-       
     </div>
-    <table id="basic-datatable" class="table table-striped dt-responsive nowrap w-100">
-        <thead>
-            <tr>
-                <th><b>#</b></th>
-                <th><b>Đề</b></th>
-                <th><b>Mô tả</b></th>
-                <th><b>Thời gian</b></th>
-                <th><b>Điểm đạt / tổng</b></th>
-                <th><b>Trạng thái</b></th>
-                <th><b>Thao tác</b></th>
-            </tr>
-        </thead>
-        <tbody>
-           
-           <ng-container *ngFor="let test of listTest">
 
-            <tr>
-           
-                <td>{{test.id}}</td>
-                <td><span class="position-label green1">{{test.title}}</span></td>
-                <td>{{test.description}}</td>
-                <td>{{test.time}} phút</td>
-              
-                <td>{{test.passedScore}} / {{test.numberOfQuestions}} </td>
-                <td>
-                    <span *ngIf="test.status" class="position-label green">Khả dụng</span>
-                    <span *ngIf="!test.status" class="position-label red">Không khả dụng</span>
-                </td>
-                <td class="action-buttons">
-                    <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
-                </td>
-        
-            </tr>
-                   
-           </ng-container>
-        </tbody>
-    </table>
- 
+    <div class="card">
+        <div class="card-body">
+            <table id="basic-datatable" class="table table-striped dt-responsive nowrap w-100">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tiêu đề</th>
+                        <th>Mô tả</th>
+                        <th>Loại</th>
+                        <th>Thời gian</th>
+                        <th>Điểm đậu</th>
+                        <th>Số simulators</th>
+                        <th>Hạng</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let test of listTest">
+                        <td>{{ test.id }}</td>
+                        <td>{{ test.title }}</td>
+                        <td>{{ test.description }}</td>
+                        <td>{{ test.type == 1 ? "Ôn tập" : "Đề thi" }}</td>
+                        <td>{{ test.time }} phút</td>
+                        <td>{{ test.passedScore }} điểm</td>
+                        <td>{{ test.numberOfQuestions }}</td>
+                        <td>{{ test.rank.name }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="test.status ? 'bg-success' : 'bg-danger'">
+                                {{ test.status ? 'Hoạt động' : 'Tạm dừng' }}
+                            </span>
+                        </td>
+                        <td class="action-buttons">
+                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-delete" (click)="deleteSimulator(test.id)"><i
+                                    class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<!-- Modal thêm bộ đề -->
 <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="max-width: 60%;">
+    <div class="modal-dialog" style="max-width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addTestModalLabel">Thêm bộ đề mô phỏng mới</h5>
@@ -68,35 +69,140 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="mb-3">
-                        <label for="testTitle" class="form-label">Tiêu đề</label>
-                        <input type="text" class="form-control" id="testTitle" [(ngModel)]="testTitle" name="testTitle"
-                            required>
+                    <!-- Thông tin cơ bản -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="testTitle" class="form-label">Tiêu đề <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="testTitle" [(ngModel)]="testTitle"
+                                    name="testTitle" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="testType" class="form-label">Loại <span class="text-danger">*</span></label>
+                                <select class="form-select" id="testType" [(ngModel)]="testType" name="testType"
+                                    required>
+                                    <option value="-1">Chọn loại</option>
+                                    <option value="2">Thi</option>
+                                  
+                                </select>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="testTime" class="form-label">Thời gian (phút) <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="testTime" [(ngModel)]="testTime"
+                                    name="testTime" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="passedScore" class="form-label">Điểm đậu <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="passedScore" [(ngModel)]="passedScore"
+                                    name="passedScore" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="rankId" class="form-label">Hạng <span class="text-danger">*</span></label>
+                                <select class="form-select" id="rankId" [(ngModel)]="rankId" name="rankId" required>
+                                    <option value="">Chọn hạng</option>
+                                    <option *ngFor="let rank of listRank" [value]="rank.id">{{rank.id}}-{{ rank.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="testDescription" class="form-label">Mô tả</label>
                         <textarea class="form-control" id="testDescription" [(ngModel)]="testDescription"
                             name="testDescription" rows="3"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="testTime" class="form-label">Thời gian (phút)</label>
-                        <input type="number" class="form-control" id="testTime" [(ngModel)]="testTime" name="testTime"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="testType" class="form-label">Loại</label>
-                        <select class="form-select" id="testType" [(ngModel)]="testType" name="testType" required>
-                            <option value="">Chọn loại</option>
-                            <option value="Simulator">Mô phỏng</option>
-                            <option value="Practice">Luyện tập</option>
-                        </select>
+
+                    <!-- Chọn Simulators -->
+                    <div class="d-flex gap-3">
+                        <!-- Danh sách simulators để chọn -->
+                        <div class="flex-fill me-3">
+                            <h6>Simulators</h6>
+                            <input type="text" class="form-control mb-2"
+                                placeholder="Tìm kiếm theo ID hoặc tiêu đề simulator..." [(ngModel)]="searchTerm"
+                                (keyup)="onSearchSimulators($event)" name="searchTerm">
+                            <!-- Bảng simulators -->
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Simulator</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let simulator of filteredSimulators">
+                                        <td>{{simulator.id}} - {{ simulator.title }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm"
+                                                (click)="addSimulatorToTest(simulator)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Hiển thị thông báo nếu không có kết quả -->
+                                    <tr *ngIf="filteredSimulators.length === 0">
+                                        <td colspan="2" class="text-center text-muted">
+                                            {{ searchTerm ? 'Không tìm thấy simulator phù hợp' : 'Không có simulator
+                                            nào' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Danh sách simulators đã chọn -->
+                        <div class="flex-fill">
+                            <h6>Simulators đã chọn ({{ selectedSimulators.length }})</h6>
+                            <div class="mb-2 text-muted">Danh sách simulators sẽ có trong bộ đề</div>
+                            <!-- Bảng simulators đã chọn -->
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Simulator</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let simulator of selectedSimulators">
+                                        <td>{{simulator.id}} - {{ simulator.title }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                (click)="removeSimulatorFromTest(simulator)">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Hiển thị thông báo nếu chưa chọn simulator nào -->
+                                    <tr *ngIf="selectedSimulators.length === 0">
+                                        <td colspan="2" class="text-center text-muted">
+                                            Chưa chọn simulator nào
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" >Lưu</button>
+                <button type="button" class="btn btn-primary" (click)="saveTest()">Lưu bộ đề</button>
             </div>
         </div>
     </div>
 </div>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<p-toast></p-toast>

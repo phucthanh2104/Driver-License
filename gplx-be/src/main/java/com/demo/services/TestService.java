@@ -21,4 +21,5 @@ public interface TestService {
     public List<TestDTO> findSimulatorByRankId(int rankId);
     public TestDTO save(TestDTO testDTO);
     public TestDTO deleteTest(TestDTO testDTO);
+    public TestDTO saveTesTSimulator(TestDTO testDTO);
 }

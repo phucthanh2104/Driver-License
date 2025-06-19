@@ -58,8 +58,8 @@ export class SituationComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         pageLength: 10,
         lengthMenu: [
-          [10, 25, 50, 100],
-          [10, 25, 50, 100],
+          [10, 25, 50, 120],
+          [10, 25, 50, 120],
         ],
       });
       console.log('DataTable initialized successfully');

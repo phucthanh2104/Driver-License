@@ -22,7 +22,13 @@
                 <tr *ngFor="let s of situations">
                     <td>{{s.id}}</td>
                     <td ><span class="position-label green1">{{s.title}}</span></td>
-                    <td>{{s.description}}</td>
+                    <td>
+                         <span *ngIf="s.description.length > 50">
+                        {{ s.description.slice(0, 50) }}...
+                    </span>
+                    <span *ngIf="s.description.length <= 50">
+                        {{ s.description }}
+                    </span></td>
                     <td><img style="width: 180px; height: 100px;" src="{{s.image}}" alt="{{s.description}}"></td>
                     <td>{{s.videoLength}}   (s)</td>
                     <td><span class="badge bg-success">{{s.status == true ? "Hoạt động": "Ngưng"}}</span></td>

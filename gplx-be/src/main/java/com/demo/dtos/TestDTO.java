@@ -19,6 +19,7 @@ public class TestDTO {
     private boolean isTest;
     private Integer numberOfQuestions;
     private List<TestDetailDTO> testDetails;
+    private List<TestSimulatorDetailDTO> testSimulatorDetails;
 
     public Long getId() {
         return id;
@@ -105,5 +106,13 @@ public class TestDTO {
 
     public void setTestDetails(List<TestDetailDTO> testDetails) {
         this.testDetails = testDetails;
+    }
+
+    public List<TestSimulatorDetailDTO> getTestSimulatorDetails() {
+        return testSimulatorDetails;
+    }
+
+    public void setTestSimulatorDetails(List<TestSimulatorDetailDTO> testSimulatorDetails) {
+        this.testSimulatorDetails = testSimulatorDetails;
     }
 }
