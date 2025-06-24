@@ -5,7 +5,9 @@ import {
   OnDestroy,
   ChangeDetectorRef,
 } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { RankService } from 'src/app/service/rank.service';
+import { SimualtorService } from 'src/app/service/simulator.service';
 import { TestService } from 'src/app/service/test.service';
 
 declare var $: any;
@@ -16,40 +18,49 @@ declare var $: any;
   styleUrls: ['./simulator.component.css'],
 })
 export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
+  simulatorList: any[] = [];
   listTest: any[] = [];
   listTestOfRank: any[] = [];
   listRank: any[] = [];
   listTestOriginal: any[] = [];
 
-  // Biến cho modal
+  selectedSimulators: any[] = [];
   testTitle: string = '';
   testDescription: string = '';
   testTime: number | null = null;
+  passedScore: number | null = null;
   testType: string = '';
+  rankId: number | null = null;
+  searchTerm: string = '';
+  filteredSimulators: any[] = [];
 
   private dataTable: any;
 
   constructor(
     private testService: TestService,
     private rankService: RankService,
-    private cdr: ChangeDetectorRef
+    private simulatorService: SimualtorService,
+    private cdr: ChangeDetectorRef,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    console.log('Simulator Component initialized');
-    this.findAll();
-    this.findListRank();
+    
+
+    // Load rank trước, sau đó mới load tests
+    this.findListRank().then(() => {
+      this.findAll();
+      this.findAllSimulators();
+    });
   }
 
   ngAfterViewInit(): void {
-    // Đợi một chút để DOM render xong rồi mới khởi tạo DataTable
     setTimeout(() => {
       this.initDataTable();
     }, 200);
   }
 
   ngOnDestroy(): void {
-    // Destroy DataTable khi component bị hủy
     try {
       if (this.dataTable) {
         this.dataTable.destroy();
@@ -62,7 +73,6 @@ export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   initDataTable(): void {
     try {
-      // Kiểm tra nếu DataTable đã được khởi tạo thì destroy trước
       if ($.fn.DataTable.isDataTable('#basic-datatable')) {
         $('#basic-datatable').DataTable().destroy();
       }
@@ -96,15 +106,6 @@ export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // XÓA hàm reloadDataTable() - gây lỗi
-  refreshTable(): void {
-    this.cdr.detectChanges();
-    // DataTable sẽ tự động cập nhật từ DOM
-    if (this.dataTable) {
-      this.dataTable.draw();
-    }
-  }
-
   findAll() {
     this.testService
       .findAllSimulator()
@@ -114,13 +115,36 @@ export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
         // Lọc chỉ những test có status = true
         const activeTests = res.filter((test: any) => test.status === true);
 
-        this.listTestOriginal = activeTests;
-        this.listTest = [...this.listTestOriginal];
+        // Map rank.name vào test.rank
+        const testsWithRankName = activeTests.map((test: any) => {
+          if (test.rank && typeof test.rank === 'number') {
+            // Nếu test.rank là number (ID), tìm rank tương ứng
+            const foundRank = this.listRank.find(
+              (rank: any) => rank.id === test.rank
+            );
+            if (foundRank) {
+              test.rank = {
+                id: foundRank.id,
+                name: foundRank.name,
+              };
+            }
+          } else if (test.rank && test.rank.id) {
+            // Nếu test.rank đã là object có ID, tìm và gán name
+            const foundRank = this.listRank.find(
+              (rank: any) => rank.id === test.rank.id
+            );
+            if (foundRank) {
+              test.rank.name = foundRank.name;
+            }
+          }
+          return test;
+        });
 
-        // Chỉ cần detectChanges, DataTable sẽ tự cập nhật
+        this.listTestOriginal = testsWithRankName;
+        this.listTest = [...this.listTestOriginal];
         this.cdr.detectChanges();
 
-        console.log('Filtered active simulator tests:', this.listTest);
+        console.log('Active tests with rank names:', this.listTest);
       })
       .catch((error) => {
         console.error('Lỗi khi lấy danh sách simulator tests:', error);
@@ -130,27 +154,61 @@ export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
+  findListRank() {
+    return this.rankService.findAll().then((res) => {
+      this.listRank = res;
+      console.log('List Rank loaded:', this.listRank);
+      this.cdr.detectChanges();
+    });
+  }
+
+  findAllSimulators() {
+    this.simulatorService.findAll().then((res) => {
+      console.log('Simulator List:', res);
+      this.simulatorList = res;
+      this.filteredSimulators = [...this.simulatorList];
+      this.cdr.detectChanges();
+    });
+  }
+
   findTest(evt: any) {
     const rankId = evt.target.value;
     console.log('Rank ID selected:', rankId);
 
     if (rankId === '-1') {
-      // Nếu chọn "Tất cả", hiển thị tất cả test có status = true
       this.listTest = [...this.listTestOriginal];
-      console.log('Showing all active simulator tests:', this.listTest);
       this.cdr.detectChanges();
     } else {
-      // Gọi API để lấy danh sách đề thi theo rankId
       this.rankService
         .findSimulatorById(rankId)
         .then((res) => {
-          console.log('API response for simulator rank:', res);
-
           // Lọc chỉ những test có status = true
           const activeTests = res.filter((test: any) => test.status === true);
-          console.log('Active simulator tests for rank:', activeTests);
 
-          this.listTest = activeTests;
+          // Map rank.name cho filtered tests
+          const testsWithRankName = activeTests.map((test: any) => {
+            if (test.rank && typeof test.rank === 'number') {
+              const foundRank = this.listRank.find(
+                (rank: any) => rank.id === test.rank
+              );
+              if (foundRank) {
+                test.rank = {
+                  id: foundRank.id,
+                  name: foundRank.name,
+                };
+              }
+            } else if (test.rank && test.rank.id) {
+              const foundRank = this.listRank.find(
+                (rank: any) => rank.id === test.rank.id
+              );
+              if (foundRank) {
+                test.rank.name = foundRank.name;
+              }
+            }
+            return test;
+          });
+
+          this.listTest = testsWithRankName;
           this.cdr.detectChanges();
         })
         .catch((error) => {
@@ -158,87 +216,221 @@ export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
             'Lỗi khi lấy danh sách đề thi simulator theo rank:',
             error
           );
-          // Đặt danh sách rỗng khi không có test hoặc có lỗi
           this.listTest = [];
-          console.log('No simulator tests found for rank, setting empty list');
           this.cdr.detectChanges();
         });
     }
   }
 
-  findListRank() {
-    this.rankService.findAll().then((res) => {
-      this.listRank = res;
-      console.log('List Rank:', res);
-      this.cdr.detectChanges();
-    });
+  // Các hàm cho modal
+  filterSimulators() {
+    if (!this.searchTerm || this.searchTerm.trim() === '') {
+      this.filteredSimulators = this.simulatorList.filter(
+        (simulator) =>
+          !this.selectedSimulators.some(
+            (selected) => selected.id === simulator.id
+          )
+      );
+    } else {
+      const searchTermLower = this.searchTerm.toLowerCase().trim();
+      this.filteredSimulators = this.simulatorList.filter((simulator) => {
+        const isAlreadySelected = this.selectedSimulators.some(
+          (selected) => selected.id === simulator.id
+        );
+        if (isAlreadySelected) return false;
+
+        const title = simulator.title?.toLowerCase() || '';
+        const id = simulator.id?.toString() || '';
+        return title.includes(searchTermLower) || id.includes(searchTermLower);
+      });
+    }
+    this.cdr.detectChanges();
   }
 
-  // Lưu bộ đề simulator
-  // saveTest() {
-  //   if (!this.testTitle || !this.testTime || !this.testType) {
-  //     alert('Vui lòng điền đầy đủ thông tin tiêu đề, thời gian và loại!');
-  //     return;
-  //   }
+  onSearchSimulators(event: any) {
+    this.searchTerm = event.target.value;
+    this.filterSimulators();
+  }
 
-  //   const testData = {
-  //     title: this.testTitle,
-  //     description: this.testDescription,
-  //     time: this.testTime,
-  //     type: this.testType,
-  //     status: true,
-  //   };
+  addSimulatorToTest(simulator: any) {
+    if (!this.selectedSimulators.some((s) => s.id === simulator.id)) {
+      this.selectedSimulators.push(simulator);
+      this.filterSimulators();
+    }
+  }
 
-  //   console.log('Dữ liệu bộ đề simulator:', testData);
+  removeSimulatorFromTest(simulator: any) {
+    const index = this.selectedSimulators.findIndex(
+      (s) => s.id === simulator.id
+    );
+    if (index > -1) {
+      this.selectedSimulators.splice(index, 1);
+      this.filterSimulators();
+    }
+  }
 
-  //   // Gọi API lưu test simulator
-  //   this.testService
-  //     .saveSimulator(testData)
-  //     .then((response) => {
-  //       console.log('Kết quả lưu simulator:', response);
-  //       alert('Lưu bộ đề mô phỏng thành công!');
+  saveTest() {
+    if (
+      !this.testTitle ||
+      !this.testTime ||
+      !this.testType ||
+      this.testType === '-1' ||
+      !this.passedScore ||
+      !this.rankId ||
+      this.rankId === -1
+    ) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail:
+          'Vui lòng điền đầy đủ thông tin tiêu đề, thời gian, loại, điểm đậu và hạng!',
+      });
+      return;
+    }
 
-  //       // Đóng modal
-  //       const modalElement = document.getElementById('addTestModal');
-  //       if (modalElement) {
-  //         const modal = (window as any).bootstrap.Modal.getInstance(
-  //           modalElement
-  //         );
-  //         modal.hide();
-  //       }
+    if (this.selectedSimulators.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail: 'Vui lòng chọn ít nhất một simulator!',
+      });
+      return;
+    }
 
-  //       this.resetTestForm();
-  //       this.findAll(); // Reload dữ liệu
-  //     })
-  //     .catch((error) => {
-  //       console.error('Lỗi khi lưu bộ đề simulator:', error);
-  //       alert('Có lỗi xảy ra khi lưu bộ đề: ' + error.message);
-  //     });
-  // }
+    const testData: any = {
+      title: this.testTitle,
+      description: this.testDescription,
+      type: parseInt(this.testType),
+      time: this.testTime,
+      passedScore: this.passedScore,
+      status: true,
+      rank: this.rankId,
+      numberOfQuestions: this.selectedSimulators.length,
+      testSimulatorDetails: this.selectedSimulators.map((simulator) => ({
+        simulator: { id: simulator.id },
+        status: true,
+      })),
+    };
 
-  // // Reset form sau khi lưu
-  // resetTestForm() {
-  //   this.testTitle = '';
-  //   this.testDescription = '';
-  //   this.testTime = null;
-  //   this.testType = '';
-  //   this.cdr.detectChanges();
-  // }
+    console.log('Dữ liệu bộ đề simulator:', testData);
 
-  // // Xóa test simulator
-  // deleteSimulator(testId: any) {
-  //   if (confirm('Bạn có chắc chắn muốn xóa bộ đề mô phỏng này?')) {
-  //     this.testService
-  //       .deleteSimulator(testId)
-  //       .then((response) => {
-  //         console.log('Kết quả xóa simulator:', response);
-  //         alert('Xóa bộ đề mô phỏng thành công!');
-  //         this.findAll(); // Reload dữ liệu
-  //       })
-  //       .catch((error) => {
-  //         console.error('Lỗi khi xóa bộ đề simulator:', error);
-  //         alert('Có lỗi xảy ra khi xóa bộ đề: ' + error.message);
-  //       });
-  //   }
-  // }
+    this.testService
+      .saveSimulator(testData)
+      .then((response) => {
+        console.log('Kết quả lưu simulator:', response);
+
+        // Hiển thị toast thành công
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Lưu bộ đề mô phỏng thành công!',
+        });
+
+        // Đóng modal
+        const modalElement = document.getElementById('addTestModal');
+        if (modalElement) {
+          const modal = (window as any).bootstrap.Modal.getInstance(
+            modalElement
+          );
+          modal.hide();
+        }
+        this.resetTestForm();
+        this.cdr.detectChanges();
+        this.findAll(); 
+        // Thêm test mới vào list thay vì reload toàn bộ
+        this.addNewTestToList(response);
+      })
+      .catch((error) => {
+        console.error('Lỗi khi lưu bộ đề simulator:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi lưu bộ đề: ' + error.message,
+        });
+      });
+  }
+
+  // Hàm thêm test mới vào list
+  addNewTestToList(newTest: any) {
+    // Map rank name cho test mới
+    if (newTest.rank && typeof newTest.rank === 'number') {
+      const foundRank = this.listRank.find(
+        (rank: any) => rank.id === newTest.rank
+      );
+      if (foundRank) {
+        newTest.rank = {
+          id: foundRank.id,
+          name: foundRank.name,
+        };
+      }
+    }
+
+    // Thêm vào đầu list
+    this.listTestOriginal.unshift(newTest);
+    this.listTest.unshift(newTest);
+
+    // Cập nhật giao diện
+    this.cdr.detectChanges();
+
+    console.log('New test added to list:', newTest);
+  }
+
+  resetTestForm() {
+    this.testTitle = '';
+    this.testDescription = '';
+    this.testTime = null;
+    this.passedScore = null;
+    this.testType = '';
+    this.rankId = null;
+    this.selectedSimulators = [];
+    this.searchTerm = '';
+    this.filteredSimulators = [...this.simulatorList];
+    this.cdr.detectChanges();
+  }
+
+  deleteSimulator(testId: any) {
+    if (confirm('Bạn có chắc chắn muốn xóa bộ đề mô phỏng này?')) {
+      this.testService
+        .delete(testId)
+        .then((response) => {
+          console.log('Kết quả xóa simulator:', response);
+
+          // Hiển thị toast thành công
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Thành công',
+            detail: 'Xóa bộ đề mô phỏng thành công!',
+          });
+
+          // Tự động cập nhật listTest mà không cần reload toàn bộ
+          this.updateListAfterDelete(testId);
+        })
+        .catch((error) => {
+          console.error('Lỗi khi xóa bộ đề simulator:', error);
+
+          // Hiển thị toast lỗi
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: 'Có lỗi xảy ra khi xóa bộ đề: ' + error.message,
+          });
+        });
+    }
+  }
+
+  // Hàm cập nhật list sau khi xóa
+  updateListAfterDelete(deletedTestId: any) {
+    // Xóa test khỏi listTestOriginal
+    this.listTestOriginal = this.listTestOriginal.filter(
+      (test) => test.id !== deletedTestId
+    );
+
+    // Xóa test khỏi listTest hiện tại
+    this.listTest = this.listTest.filter((test) => test.id !== deletedTestId);
+
+    // Cập nhật giao diện
+    this.cdr.detectChanges();
+
+    console.log('List updated after delete:', this.listTest);
+  }
 }

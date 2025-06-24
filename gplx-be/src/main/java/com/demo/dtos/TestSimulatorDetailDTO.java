@@ -3,7 +3,7 @@ package com.demo.dtos;
 public class TestSimulatorDetailDTO {
 
     private int id;
-    private Byte status;
+    private boolean status;
     private SimulatorDTO simulator;
 
     private Long testId;
@@ -20,11 +20,11 @@ public class TestSimulatorDetailDTO {
         this.id = id;
     }
 
-    public Byte getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 

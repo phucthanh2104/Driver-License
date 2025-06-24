@@ -5,6 +5,7 @@ import {
   OnDestroy,
   ChangeDetectorRef,
 } from '@angular/core';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { QuestionService } from 'src/app/service/question.service';
 import { RankService } from 'src/app/service/rank.service';
 import { TestService } from 'src/app/service/test.service';
@@ -41,7 +42,9 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     private testService: TestService,
     private rankService: RankService,
     private questionService: QuestionService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -52,14 +55,12 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Đợi một chút để DOM render xong rồi mới khởi tạo DataTable
     setTimeout(() => {
       this.initDataTable();
     }, 200);
   }
 
   ngOnDestroy(): void {
-    // Destroy DataTable khi component bị hủy
     try {
       if (this.dataTable) {
         this.dataTable.destroy();
@@ -72,7 +73,6 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
 
   initDataTable(): void {
     try {
-      // Kiểm tra nếu DataTable đã được khởi tạo thì destroy trước
       if ($.fn.DataTable.isDataTable('#basic-datatable')) {
         $('#basic-datatable').DataTable().destroy();
       }
@@ -106,10 +106,8 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // XÓA hàm reloadDataTable() - không cần thiết
   refreshTable(): void {
     this.cdr.detectChanges();
-    // DataTable sẽ tự động cập nhật từ DOM
     if (this.dataTable) {
       this.dataTable.draw();
     }
@@ -127,7 +125,6 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
         this.listTestOriginal = activeTests;
         this.listTest = [...this.listTestOriginal];
 
-        // Chỉ cần detectChanges, DataTable sẽ tự cập nhật
         this.cdr.detectChanges();
 
         console.log('Filtered active tests:', this.listTest);
@@ -155,13 +152,11 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // Lọc test theo rank
   findTest(evt: any) {
     const rankId = evt.target.value;
     console.log('Rank ID selected:', rankId);
 
     if (rankId === '-1') {
-      // Nếu chọn "Tất cả", hiển thị tất cả test có status = true
       this.listTest = [...this.listTestOriginal];
       console.log('Showing all active tests:', this.listTest);
       this.cdr.detectChanges();
@@ -171,7 +166,6 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
         .then((res) => {
           console.log('API response for rank:', res);
 
-          // Lọc chỉ những test có status = true
           const activeTests = res.filter((test: any) => test.status === true);
           console.log('Active tests for rank:', activeTests);
 
@@ -180,7 +174,6 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
         })
         .catch((error) => {
           console.error('Lỗi khi lấy danh sách đề thi theo rank:', error);
-          // Đặt danh sách rỗng khi không có test hoặc có lỗi
           this.listTest = [];
           console.log('No tests found for rank, setting empty list');
           this.cdr.detectChanges();
@@ -188,7 +181,6 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // Các hàm cho modal thêm test
   filterQuestions() {
     if (!this.searchTerm || this.searchTerm.trim() === '') {
       this.filteredQuestions = this.questionList.filter(
@@ -236,14 +228,30 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveTest() {
+    // Validation với MessageService
     if (
       !this.testTitle ||
       !this.testTime ||
       this.testType === '-1' ||
+      !this.passedScore ||
       !this.rankId ||
       this.rankId === -1
     ) {
-      alert('Vui lòng điền đầy đủ thông tin tiêu đề, thời gian, loại và hạng!');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail:
+          'Vui lòng điền đầy đủ thông tin tiêu đề, thời gian, loại, điểm đậu và hạng!',
+      });
+      return;
+    }
+
+    if (this.selectedQuestions.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail: 'Vui lòng chọn ít nhất một câu hỏi!',
+      });
       return;
     }
 
@@ -269,7 +277,13 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
       .save(testData)
       .then((response) => {
         console.log('Kết quả lưu:', response);
-        alert('Lưu bộ đề thành công!');
+
+        // Hiển thị toast thành công
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Lưu bộ đề thành công!',
+        });
 
         // Đóng modal
         const modalElement = document.getElementById('addTestModal');
@@ -281,12 +295,32 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         this.resetTestForm();
-        this.findAll(); // Reload dữ liệu
+
+        // Thêm test mới vào list thay vì reload toàn bộ
+        this.addNewTestToList(response);
       })
       .catch((error) => {
         console.error('Lỗi khi lưu bộ đề:', error);
-        alert('Có lỗi xảy ra khi lưu bộ đề: ' + error.message);
+
+        // Hiển thị toast lỗi
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi lưu bộ đề: ' + error.message,
+        });
       });
+  }
+
+  // Hàm thêm test mới vào list
+  addNewTestToList(newTest: any) {
+    // Thêm vào đầu list
+    this.listTestOriginal.unshift(newTest);
+    this.listTest.unshift(newTest);
+
+    // Cập nhật giao diện
+    this.cdr.detectChanges();
+
+    console.log('New test added to list:', newTest);
   }
 
   resetTestForm() {
@@ -305,18 +339,57 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   deleteTest(testId: any) {
-    if (confirm('Bạn có chắc chắn muốn xóa bộ đề này?')) {
-      this.testService
-        .delete(testId)
-        .then((response) => {
-          console.log('Kết quả xóa:', response);
-          alert('Xóa bộ đề thành công!');
-          this.findAll(); // Reload dữ liệu
-        })
-        .catch((error) => {
-          console.error('Lỗi khi xóa bộ đề:', error);
-          alert('Có lỗi xảy ra khi xóa bộ đề: ' + error.message);
-        });
-    }
+    // Sử dụng ConfirmationService thay vì confirm()
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn xóa bộ đề này?',
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.testService
+          .delete(testId)
+          .then((response) => {
+            console.log('Kết quả xóa:', response);
+
+            // Hiển thị toast thành công
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Xóa bộ đề thành công!',
+            });
+
+            // Tự động cập nhật listTest mà không cần reload toàn bộ
+            this.updateListAfterDelete(testId);
+          })
+          .catch((error) => {
+            console.error('Lỗi khi xóa bộ đề:', error);
+
+            // Hiển thị toast lỗi
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Có lỗi xảy ra khi xóa bộ đề: ' + error.message,
+            });
+          });
+      },
+      reject: () => {
+        // User cancelled - không cần làm gì
+      },
+    });
+  }
+
+  // Hàm cập nhật list sau khi xóa
+  updateListAfterDelete(deletedTestId: any) {
+    // Xóa test khỏi listTestOriginal
+    this.listTestOriginal = this.listTestOriginal.filter(
+      (test) => test.id !== deletedTestId
+    );
+
+    // Xóa test khỏi listTest hiện tại
+    this.listTest = this.listTest.filter((test) => test.id !== deletedTestId);
+
+    // Cập nhật giao diện
+    this.cdr.detectChanges();
+
+    console.log('List updated after delete:', this.listTest);
   }
 }

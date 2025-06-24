@@ -1,7 +1,4 @@
 <h2 class="title">120 Tình huống</h2>
-<!-- <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTestModal">
-    <i class="fas fa-plus"></i> Thêm bộ đề
-</button> -->
 
 <!-- Table với DataTables -->
 <div class="card">
@@ -21,62 +18,148 @@
             <tbody>
                 <tr *ngFor="let s of situations">
                     <td>{{s.id}}</td>
-                    <td ><span class="position-label green1">{{s.title}}</span></td>
-                    <td>{{s.description}}</td>
-                    <td><img style="width: 180px; height: 100px;" src="{{s.image}}" alt="{{s.description}}"></td>
-                    <td>{{s.videoLength}}   (s)</td>
-                    <td><span class="badge bg-success">{{s.status == true ? "Hoạt động": "Ngưng"}}</span></td>
+                    <td><span class="position-label green1">{{s.title}}</span></td>
+                    <td>
+                        <span *ngIf="s.description.length > 50" [title]="s.description" style="cursor: pointer;">
+                            {{ s.description.slice(0, 50) }}...
+                        </span>
+                        <span *ngIf="s.description.length <= 50">
+                            {{ s.description }}
+                        </span>
+                    </td>
+                    <td>
+                        <img style="width: 180px; height: 100px; object-fit: cover; border-radius: 4px;" [src]="s.image"
+                            [alt]="s.description" class="img-thumbnail">
+                    </td>
+                    <td>{{s.videoLength}} (s)</td>
+                    <td>
+                        <span class="badge" [ngClass]="s.status ? 'bg-success' : 'bg-danger'">
+                            {{s.status ? "Hoạt động" : "Ngưng"}}
+                        </span>
+                    </td>
                     <td class="action-buttons">
-                        <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-delete"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-primary btn-sm me-2" (click)="openVideoModal(s)" title="Xem video">
+                            <i class="fas fa-play"></i>
+                        </button>
+                      
+                        <!-- <button class="btn btn-danger btn-sm" title="Xóa">
+                            <i class="fas fa-trash"></i>
+                        </button> -->
                     </td>
                 </tr>
-               
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- Modal thêm bộ đề -->
-<div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="max-width: 80%;">
+<!-- Modal Video Player -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addTestModalLabel">Thêm bộ đề mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="videoModalLabel">
+                    <i class="fas fa-play-circle me-2"></i>
+                    {{ selectedSituation?.title || 'Video tình huống' }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="closeVideoModal()"></button>
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="testTitle" class="form-label">Tiêu đề</label>
-                        <input type="text" class="form-control" id="testTitle" [(ngModel)]="testTitle" name="testTitle"
-                            required>
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <!-- Video Player -->
+                    <div class="col-md-8">
+                        <div class="video-container" style="background: #000; position: relative;">
+                            <video #videoPlayer *ngIf="selectedSituation?.videoLink" class="w-100"
+                                style="max-height: 500px;" controls preload="metadata"
+                                [poster]="selectedSituation?.image">
+                                <source [src]="selectedSituation?.videoLink" type="video/mp4">
+                                <p class="text-white p-3">
+                                    Trình duyệt của bạn không hỗ trợ video HTML5.
+                                    <a [href]="selectedSituation?.videoLink" target="_blank" class="text-primary">
+                                        Tải xuống video
+                                    </a>
+                                </p>
+                            </video>
+
+                            <!-- Loading spinner -->
+                            <div *ngIf="videoLoading" class="position-absolute top-50 start-50 translate-middle">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Đang tải...</span>
+                                </div>
+                            </div>
+
+                            <!-- Error message -->
+                            <div *ngIf="!selectedSituation?.videoLink"
+                                class="d-flex align-items-center justify-content-center h-100 text-white">
+                                <div class="text-center">
+                                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                                    <h5>Không có video</h5>
+                                    <p>Video cho tình huống này chưa được tải lên.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="testDescription" class="form-label">Mô tả</label>
-                        <textarea class="form-control" id="testDescription" [(ngModel)]="testDescription"
-                            name="testDescription" rows="3"></textarea>
+
+                    <!-- Thông tin tình huống -->
+                    <div class="col-md-4">
+                        <div class="p-4">
+                            <h6 class="fw-bold text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Thông tin tình huống
+                            </h6>
+
+                            <div class="mb-3">
+                                <strong>ID:</strong> {{ selectedSituation?.id }}
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Tiêu đề:</strong><br>
+                                <span class="text-muted">{{ selectedSituation?.title }}</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Mô tả:</strong><br>
+                                <span class="text-muted">{{ selectedSituation?.description }}</span>
+                            </div>
+                            <div class="mb-3">
+                                <strong><i class="fas fa-info-circle me-2"></i>Lưu ý</strong><br>
+                                <span class="text-shadow-inherit">Thời lượng video có thể bị thay đổi 1-2s so với thực tế</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Thời lượng:</strong><br>
+                                <span class="badge bg-info">{{ selectedSituation?.videoLength -1}} giây</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Trạng thái:</strong><br>
+                                <span class="badge" [ngClass]="selectedSituation?.status ? 'bg-success' : 'bg-danger'">
+                                    {{ selectedSituation?.status ? 'Hoạt động' : 'Ngưng hoạt động' }}
+                                </span>
+                            </div>
+
+                            <!-- Hình ảnh thumbnail -->
+                            <div class="mb-3" *ngIf="selectedSituation?.image">
+                                <strong>Hình ảnh:</strong><br>
+                                <img [src]="selectedSituation?.image" [alt]="selectedSituation?.title"
+                                    class="img-fluid rounded mt-2" style="max-width: 100%; height: auto;">
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="testTime" class="form-label">Thời gian (giây)</label>
-                        <input type="number" class="form-control" id="testTime" [(ngModel)]="testTime" name="testTime"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="testType" class="form-label">Loại</label>
-                        <select class="form-select" id="testType" [(ngModel)]="testType" name="testType" required>
-                            <option value="">Chọn loại</option>
-                            <option value="A">Loại A</option>
-                            <option value="B">Loại B</option>
-                            <option value="C">Loại C</option>
-                        </select>
-                    </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" (click)="saveTest()">Lưu</button>
+                <div class="me-auto">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Sử dụng các nút điều khiển video để phát/tạm dừng
+                    </small>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeVideoModal()">
+                    <i class="fas fa-times me-2"></i>Đóng
+                </button>
             </div>
         </div>
     </div>
 </div>
+

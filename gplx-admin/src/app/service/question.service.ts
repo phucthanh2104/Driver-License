@@ -83,6 +83,7 @@ export class QuestionService {
     if (imageFile) {
       formData.append('image', imageFile);
     }
+    
 
     return await lastValueFrom(
       this.httpClient.post(

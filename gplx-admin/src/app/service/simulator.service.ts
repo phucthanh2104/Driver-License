@@ -56,36 +56,5 @@ export class SimualtorService {
       throw error; // Ném lỗi để QuestionComponent xử lý
     }
   }
-  async addQuestion(questionDTO: any, imageFile?: File): Promise<any> {
-    const formData = new FormData();
-
-    // Thêm questionDTO dưới dạng chuỗi JSON
-    formData.append(
-      'question',
-      JSON.stringify({
-        content: questionDTO.content,
-        explain: questionDTO.explain || '', // Nếu không có giải thích, để rỗng
-        status: questionDTO.status || true, // Mặc định là true nếu không có
-        rankA: questionDTO.isCritical || false, // isCritical tương ứng với rankA
-        failed: questionDTO.failed || false, // Mặc định là false nếu không có
-        answers: questionDTO.answers.map((answer: any) => ({
-          content: answer.content,
-          status: answer.status || true, // Mặc định là true nếu không có
-          correct: answer.correct, // Sử dụng 'correct' thay vì 'isCorrect'
-        })),
-      })
-    );
-
-    // Thêm file ảnh nếu có
-    if (imageFile) {
-      formData.append('image', imageFile);
-    }
-
-    return await lastValueFrom(
-      this.httpClient.post(
-        this.baseUrlService.getBaseUrl() + 'question/addQuestion',
-        formData
-      )
-    );
-  }
+ 
 }

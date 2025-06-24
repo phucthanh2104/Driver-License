@@ -21,11 +21,11 @@ public class TestSimulatorDetails {
     private Test test;
 
     @ManyToOne
-    @JoinColumn(name = "chapter_simulator_id", nullable = false)
+    @JoinColumn(name = "chapter_simulator_id", nullable = true)
     private ChapterSimulator chapter;
 
     @Column(name = "status")
-    private Byte status;
+    private boolean status;
 
     public int getId() {
         return id;
@@ -63,11 +63,11 @@ public class TestSimulatorDetails {
         this.id = id;
     }
 
-    public Byte getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 }

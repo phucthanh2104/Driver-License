@@ -142,6 +142,26 @@ public class TestController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping(value = "/addTestSimulatorDetail", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> addTestSimulator(@RequestBody TestDTO testDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            TestDTO savedTestDTO = testService.saveTesTSimulator(testDTO);
+            response.put("status", "success");
+            response.put("test", savedTestDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", "Có lỗi xảy ra khi thêm bài test: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PostMapping("/deleteTest/{id}")
     public ResponseEntity<Object> deleteTest(@PathVariable("id") Long id) {
         Map<String, Object> response = new HashMap<>();

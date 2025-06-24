@@ -3,6 +3,7 @@ package com.demo.services;
 import com.demo.dtos.*;
 import com.demo.entities.*;
 import com.demo.repositories.QuestionRepository;
+import com.demo.repositories.SimulatorRepository;
 import com.demo.repositories.TestRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,6 +25,8 @@ public class TestServiceImpl implements TestService {
     private TestRepository testRepository;
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private SimulatorRepository simulatorRepository;
     @Autowired
     private RankService rankService;
     @Autowired
@@ -103,6 +106,94 @@ public class TestServiceImpl implements TestService {
         }
     }
 
+    @Override
+    @Transactional
+    public TestDTO saveTesTSimulator(TestDTO testDTO) {
+        // Ánh xạ TestDTO sang Test entity
+        Test test = new Test();
+        test.setTitle(testDTO.getTitle());
+        test.setDescription(testDTO.getDescription());
+        test.setType(testDTO.getType());
+        test.setTime(testDTO.getTime());
+        test.setPassedScore(testDTO.getPassedScore());
+        test.setStatus(testDTO.isStatus());
+        test.setTest(false);
+        test.setNumberOfQuestions(testDTO.getNumberOfQuestions());
+
+        // Xử lý rank
+        if (testDTO.getRank() != null) {
+            RankDTO rankDTO = rankService.findById(testDTO.getRank());
+            if (rankDTO == null) {
+                throw new IllegalArgumentException("Rank với ID " + testDTO.getRank() + " không tồn tại");
+            }
+            Rank rank = modelMapper.map(rankDTO, Rank.class);
+            test.setRank(rank);
+        }
+
+        // Lấy danh sách TestDetailDTO từ testDTO
+        List<TestSimulatorDetailDTO> testSimulatorDetailDTOS = testDTO.getTestSimulatorDetails();
+        if (testSimulatorDetailDTOS == null || testSimulatorDetailDTOS.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách câu hỏi không được để trống");
+        }
+
+        // Tạo danh sách TestDetails
+        List<TestSimulatorDetails> testSimulatorDetails = new ArrayList<>();
+        for (TestSimulatorDetailDTO detailDTO : testSimulatorDetailDTOS) {
+            if (detailDTO.getSimulator() == null || detailDTO.getSimulator().getId() == null) {
+                throw new IllegalArgumentException("simulator không được để trống trong testSimulatorDetails");
+            }
+
+            // Tìm câu hỏi từ repository
+            Simulator simulator = simulatorRepository.findById(detailDTO.getSimulator().getId()).orElseThrow();
+            if (simulator == null) {
+                throw new IllegalArgumentException("Câu hỏi với ID " + detailDTO.getSimulator().getId() + " không tồn tại");
+            }
+
+            // Tạo TestDetails
+            TestSimulatorDetails testSimulatorDetail = new TestSimulatorDetails();
+            testSimulatorDetail.setTest(test); // Liên kết với Test (ID sẽ được gán sau khi lưu Test)
+            testSimulatorDetail.setSimulator(simulator); // Gán câu hỏi
+            testSimulatorDetail.setChapter(null); // chapter_id = null theo yêu cầu
+            testSimulatorDetail.setStatus(true); // status = true theo yêu cầu
+
+            testSimulatorDetails.add(testSimulatorDetail);
+        }
+
+        // Gán danh sách testSimulatorDetails vào Test
+        test.setTestSimulatorDetails(testSimulatorDetails);
+
+        // Lưu Test (tự động lưu TestDetails do cascade = CascadeType.ALL)
+        Test savedTest = testRepository.save(test);
+
+        // Tải lại Test từ cơ sở dữ liệu để đảm bảo dữ liệu đầy đủ
+        Test loadedTest = entityManager.find(Test.class, savedTest.getId());
+        if (loadedTest.getTestSimulatorDetails() == null || loadedTest.getTestSimulatorDetails().isEmpty()) {
+            throw new IllegalStateException("Không thể lưu testSimulatorDetails vào cơ sở dữ liệu");
+        }
+
+        // Ánh xạ Test sang TestDTO để trả về
+        TestDTO resultDTO = modelMapper.map(loadedTest, TestDTO.class);
+
+        // Ánh xạ danh sách TestDetails sang TestDetailDTO
+        List<TestSimulatorDetailDTO> resultTestSimulatorDetails = loadedTest.getTestSimulatorDetails().stream().map(testSimulatorDetail -> {
+            TestSimulatorDetailDTO dto = new TestSimulatorDetailDTO();
+            dto.setTestId(testSimulatorDetail.getTest().getId());
+            dto.setChapterSimulatorId(null); // chapter_id = null
+            Simulator simulator = testSimulatorDetail.getSimulator();
+            SimulatorDTO simulatorDTO = modelMapper.map(simulator, SimulatorDTO.class);
+            dto.setTestTime(testSimulatorDetail.getTest().getTime());
+            dto.setTestType(testSimulatorDetail.getTest().getType());
+            dto.setTestPassedScore(testSimulatorDetail.getTest().getPassedScore());
+
+            dto.setSimulator(simulatorDTO);
+            dto.setStatus(testSimulatorDetail.getStatus());
+            return dto;
+        }).collect(Collectors.toList());
+
+        resultDTO.setTestSimulatorDetails(resultTestSimulatorDetails);
+
+        return resultDTO;
+    }
     @Override
     @Transactional
     public TestDTO save(TestDTO testDTO) {
@@ -230,6 +321,8 @@ public class TestServiceImpl implements TestService {
         return convertToDTO(test);
     }
 
+
+
     // Phương thức hỗ trợ để chuyển đổi từ Test sang TestDTO
     private TestDTO convertToDTO(Test test) {
         TestDTO testDTO = new TestDTO();
@@ -238,7 +331,11 @@ public class TestServiceImpl implements TestService {
         testDTO.setDescription(test.getDescription());
         testDTO.setType(test.getType());
         testDTO.setTime(test.getTime());
-        testDTO.setPassedScore(test.getPassedScore());
+        if (test.getPassedScore() != null) {
+            testDTO.setPassedScore(test.getPassedScore().intValue());
+        } else {
+            testDTO.setPassedScore(0); // Giá trị mặc định
+        }
         testDTO.setStatus(test.isStatus());
         testDTO.setTest(test.isTest());
         testDTO.setNumberOfQuestions(test.getNumberOfQuestions());

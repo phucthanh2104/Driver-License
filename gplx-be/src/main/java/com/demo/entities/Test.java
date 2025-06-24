@@ -44,6 +44,9 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TestDetails> testDetails;
 
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<TestSimulatorDetails> testSimulatorDetails;
+
     public long getId() {
         return id;
     }
@@ -74,6 +77,14 @@ public class Test {
 
     public void setRank(Rank rank) {
         this.rank = rank;
+    }
+
+    public List<TestSimulatorDetails> getTestSimulatorDetails() {
+        return testSimulatorDetails;
+    }
+
+    public void setTestSimulatorDetails(List<TestSimulatorDetails> testSimulatorDetails) {
+        this.testSimulatorDetails = testSimulatorDetails;
     }
 
     public Integer getTime() {
