@@ -1,4 +1,11 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { SimualtorService } from 'src/app/service/simulator.service';
 
 declare var $: any;
@@ -9,11 +16,16 @@ declare var $: any;
   styleUrls: ['./situation.component.css'],
 })
 export class SituationComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+
   testTitle: string = '';
   testDescription: string = '';
   testTime: number | null = null;
   testType: string = '';
-  situations : any ={}
+  situations: any[] = [];
+  selectedSituation: any = null;
+  videoLoading: boolean = false;
+
   constructor(private simulatorService: SimualtorService) {}
 
   ngOnInit(): void {
@@ -69,11 +81,63 @@ export class SituationComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   findAll() {
-    this.simulatorService.findAll().then((res) => {
-      this.situations = res;
-      console.log(res);
-      
-    });
+    this.simulatorService
+      .findAll()
+      .then((res) => {
+        this.situations = res;
+        console.log('Situations loaded:', res);
+      })
+      .catch((error) => {
+        console.error('Error loading situations:', error);
+      });
+  }
+
+  openVideoModal(situation: any) {
+    console.log('Opening video modal for situation:', situation);
+    this.selectedSituation = situation;
+    this.videoLoading = true;
+
+    // Mở modal
+    const modalElement = document.getElementById('videoModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+
+      // Xử lý khi video được load
+      setTimeout(() => {
+        if (this.videoPlayer && this.videoPlayer.nativeElement) {
+          const video = this.videoPlayer.nativeElement;
+
+          video.addEventListener('loadstart', () => {
+            this.videoLoading = true;
+          });
+
+          video.addEventListener('canplay', () => {
+            this.videoLoading = false;
+          });
+
+          video.addEventListener('error', (e) => {
+            console.error('Video error:', e);
+            this.videoLoading = false;
+          });
+        }
+      }, 100);
+    }
+  }
+
+  closeVideoModal() {
+    // Dừng video khi đóng modal
+    if (this.videoPlayer && this.videoPlayer.nativeElement) {
+      const video = this.videoPlayer.nativeElement;
+      video.pause();
+      video.currentTime = 0;
+    }
+
+    // Reset state
+    this.selectedSituation = null;
+    this.videoLoading = false;
+
+    console.log('Video modal closed');
   }
 
   saveTest(): void {

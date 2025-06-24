@@ -334,9 +334,9 @@ export class SimulatorComponent implements OnInit, AfterViewInit, OnDestroy {
           );
           modal.hide();
         }
-
         this.resetTestForm();
-
+        this.cdr.detectChanges();
+        this.findAll(); 
         // Thêm test mới vào list thay vì reload toàn bộ
         this.addNewTestToList(response);
       })

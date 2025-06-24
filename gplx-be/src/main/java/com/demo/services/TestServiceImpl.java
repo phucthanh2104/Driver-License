@@ -184,7 +184,7 @@ public class TestServiceImpl implements TestService {
             dto.setTestTime(testSimulatorDetail.getTest().getTime());
             dto.setTestType(testSimulatorDetail.getTest().getType());
             dto.setTestPassedScore(testSimulatorDetail.getTest().getPassedScore());
-          
+
             dto.setSimulator(simulatorDTO);
             dto.setStatus(testSimulatorDetail.getStatus());
             return dto;
@@ -331,7 +331,11 @@ public class TestServiceImpl implements TestService {
         testDTO.setDescription(test.getDescription());
         testDTO.setType(test.getType());
         testDTO.setTime(test.getTime());
-        testDTO.setPassedScore(test.getPassedScore());
+        if (test.getPassedScore() != null) {
+            testDTO.setPassedScore(test.getPassedScore().intValue());
+        } else {
+            testDTO.setPassedScore(0); // Giá trị mặc định
+        }
         testDTO.setStatus(test.isStatus());
         testDTO.setTest(test.isTest());
         testDTO.setNumberOfQuestions(test.getNumberOfQuestions());

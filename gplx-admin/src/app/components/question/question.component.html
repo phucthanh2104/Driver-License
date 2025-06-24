@@ -33,13 +33,14 @@
                 <tr>
                     <td style="width: 10px;">{{q.id}}</td>
                     <td>
-                        <span class="position-label green1" *ngIf="q.content.length > 80">
+                        <span class="position-label green1 question-content-tooltip" [attr.data-tooltip]="q.content"
+                            *ngIf="q.content.length > 80">
                             {{ q.content.slice(0, 80) }}...
                         </span>
-                        <span class="position-label green1" *ngIf="q.content.length <= 80">
+                        <span class="position-label green1 question-content-tooltip" [attr.data-tooltip]="q.content"
+                            *ngIf="q.content.length <= 80">
                             {{ q.content }}
-                        </span>
-                    </td>
+                        </span>               </td>
                     <td>
                         <span *ngIf="q.failed" class="position-label red">Điểm liệt</span>
                         <span *ngIf="!q.failed" class="position-label green">Kiến thức</span>
@@ -129,7 +130,7 @@
                         </label>
                     </div>
                     <div class="mb-3">
-                        <button type="button" class="btn btn-secondary" (click)="addAnswerField()">Thêm câu trả
+                        <button type="button" class="btn btn-outline-success" (click)="addAnswerField()">Thêm câu trả
                             lời</button>
                     </div>
                     <div *ngFor="let answer of answers; let i = index">
@@ -197,7 +198,7 @@
                         </label>
                     </div>
                     <div class="mb-3">
-                        <button type="button" class="btn btn-secondary" (click)="addNewAnswerField()">Thêm câu trả
+                        <button type="button" class="btn btn-outline-success" (click)="addNewAnswerField()">Thêm câu trả
                             lời</button>
                     </div>
                     <div *ngFor="let answer of newAnswers; let i = index">
