@@ -26,7 +26,10 @@ export class TestService {
   async delete(id : any): Promise<any> {
     return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/deleteTest/'+id, {}));
   }
-  async updateTest(simulator: any): Promise<any> {
-    return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/updateTest',simulator));
+  async updateTest(test: any): Promise<any> {
+    return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/updateTest',test));
+  }
+  async updateSimulatorTest(simulator: any): Promise<any> {
+    return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/updateSimulatorTest',simulator));
   }
 }

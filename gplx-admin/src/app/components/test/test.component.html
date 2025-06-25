@@ -26,6 +26,7 @@
                         <th><b>#</b></th>
                         <th><b>Đề</b></th>
                         <th><b>Mô tả</b></th>
+                        <th><b>Loại</b></th>
                         <th><b>Số câu</b></th>
                         <th><b>Thời gian</b></th>
                         <th><b>Hạng xe</b></th>
@@ -40,13 +41,10 @@
                             <td>{{test.id}}</td>
                             <td><span class="position-label green1">{{test.title}}</span></td>
                             <td>{{test.description}}</td>
+                            <td>{{test.type == 1  ? "Ôn tập":"Đề thi"}}</td>
                             <td>{{test.numberOfQuestions}}</td>
                             <td>{{test.time}} phút</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    {{ getRankNameById(test.rank?.id || test.rank) }}
-                                </span>
-                            </td>
+                            <td>{{ getRankNameById(test.rank?.id || test.rank) }}  </td>
                             <td>
                                 <span *ngIf="test.status" class="position-label green">Khả dụng</span>
                                 <span *ngIf="!test.status" class="position-label red">Không khả dụng</span>
