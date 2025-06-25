@@ -20,16 +20,16 @@
             <table id="basic-datatable" class="table table-striped dt-responsive nowrap w-100">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Tiêu đề</th>
-                        <th>Mô tả</th>
-                        <th>Loại</th>
-                        <th>Thời gian</th>
-                        <th>Điểm đậu</th>
-                        <th>Số simulators</th>
-                        <th>Hạng</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
+                        <th> <b>#</b></th>
+                        <th> <b>Tiêu đề</b></th>
+                        <th> <b>Mô tả</b></th>
+                        <th> <b>Loại</b></th>
+                        <th> <b>Thời gian</b></th>
+                        <th> <b>Điểm đậu</b></th>
+                        <th> <b>Số simulators</b></th>
+                        <th> <b>Hạng</b></th>
+                        <th> <b>Trạng thái</b></th>
+                        <th> <b>Thao tác</b></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +48,7 @@
                             </span>
                         </td>
                         <td class="action-buttons">
-                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-edit" (click)="editTest(test)"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-delete" (click)="deleteSimulator(test.id)"><i
                                     class="fas fa-trash"></i></button>
                         </td>
@@ -58,6 +58,7 @@
         </div>
     </div>
 </div>
+
 <!-- Modal thêm bộ đề -->
 <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="max-width: 90%;">
@@ -283,6 +284,241 @@
                 </button>
                 <button type="button" class="btn btn-primary" (click)="saveTest()">
                     <i class="fas fa-save me-2"></i>Lưu bộ đề
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal sửa bộ đề -->
+<div class="modal fade" id="editTestModal" tabindex="-1" aria-labelledby="editTestModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 90%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTestModalLabel">
+                    <i class="fas fa-edit me-2"></i>Sửa bộ đề mô phỏng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="resetEditForm()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTestForm">
+                    <!-- Thông tin cơ bản -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning text-white">
+                            <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin cơ bản</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editTestTitle" class="form-label fw-bold">
+                                            Tiêu đề <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="editTestTitle"
+                                            [(ngModel)]="editTestTitle" name="editTestTitle"
+                                            placeholder="Nhập tiêu đề bộ đề mô phỏng" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="editTestType" class="form-label fw-bold">
+                                            Loại <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select" id="editTestType" [(ngModel)]="editTestType"
+                                            name="editTestType" required>
+                                            <option value="-1">Chọn loại</option>
+                                            <option value="1">Ôn tập</option>
+                                            <option value="2">Đề thi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="editTestTime" class="form-label fw-bold">
+                                            Thời gian (phút) <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="editTestTime"
+                                            [(ngModel)]="editTestTime" name="editTestTime" placeholder="60" min="1"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="editPassedScore" class="form-label fw-bold">
+                                            Điểm đạt <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="editPassedScore"
+                                            [(ngModel)]="editPassedScore" name="editPassedScore" placeholder="80"
+                                            min="0" max="100" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="editRankId" class="form-label fw-bold">
+                                            Hạng <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select" id="editRankId" [(ngModel)]="editRankId"
+                                            name="editRankId" required>
+                                            <option value="-1">Chọn hạng</option>
+                                            <option *ngFor="let rank of listRank" [value]="rank.id">
+                                                {{ rank.id }} - {{ rank.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="editTestDescription" class="form-label fw-bold">Mô tả</label>
+                                        <textarea class="form-control" id="editTestDescription"
+                                            [(ngModel)]="editTestDescription" name="editTestDescription" rows="3"
+                                            placeholder="Nhập mô tả cho bộ đề mô phỏng (tùy chọn)"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chọn tình huống -->
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-desktop me-2"></i>
+                                Chọn tình huống
+                                <span class="badge bg-light text-dark ms-2">
+                                    Đã chọn: {{ editSelectedSimulators.length }}
+                                </span>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Danh sách tình huống -->
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 h-100">
+                                        <h6 class="text-primary mb-3">
+                                            <i class="fas fa-list me-2"></i>Danh sách tình huống
+                                        </h6>
+
+                                        <div class="mb-3">
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-search"></i>
+                                                </span>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Tìm kiếm theo ID hoặc tiêu đề..."
+                                                    [(ngModel)]="editSearchTerm"
+                                                    (keyup)="onEditSearchSimulators($event)" name="editSearchTerm">
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table class="table table-sm table-hover">
+                                                <thead class="table-dark sticky-top">
+                                                    <tr>
+                                                        <th style="width: 80%;">Simulator</th>
+                                                        <th style="width: 20%;" class="text-center">Thêm</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let simulator of editFilteredSimulators">
+                                                        <td>
+                                                            <small class="text-muted">#{{simulator.id}}</small><br>
+                                                            <span class="text-truncate d-block"
+                                                                style="max-width: 300px;" [title]="simulator.title">
+                                                                {{ simulator.title }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                                (click)="addSimulatorToEditTest(simulator)"
+                                                                title="Thêm simulator">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Thông báo khi không có kết quả -->
+                                            <div *ngIf="editFilteredSimulators.length === 0"
+                                                class="text-center text-muted py-4">
+                                                <i class="fas fa-search mb-2 fa-2x"></i><br>
+                                                {{ editSearchTerm ? 'Không tìm thấy simulator phù hợp' : 'Không có
+                                                simulator
+                                                nào' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Simulators đã chọn -->
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 h-100">
+                                        <h6 class="text-info mb-3">
+                                            <i class="fas fa-check-circle me-2"></i>
+                                            Simulators đã chọn ({{ editSelectedSimulators.length }})
+                                        </h6>
+
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table class="table table-sm table-hover">
+                                                <thead class="table-info sticky-top">
+                                                    <tr>
+                                                        <th style="width: 80%;">Nội dung</th>
+                                                        <th style="width: 20%;" class="text-center">Xóa</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let simulator of editSelectedSimulators">
+                                                        <td>
+                                                            <small class="text-muted">#{{simulator.id}}</small><br>
+                                                            <span class="text-truncate d-block"
+                                                                style="max-width: 300px;" [title]="simulator.title">
+                                                                {{ simulator.title }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-outline-danger btn-sm"
+                                                                (click)="removeSimulatorFromEditTest(simulator)"
+                                                                title="Xóa simulator">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Thông báo khi chưa chọn simulator -->
+                                            <div *ngIf="editSelectedSimulators.length === 0"
+                                                class="text-center text-muted py-4">
+                                                <i class="fas fa-desktop mb-2 fa-2x"></i><br>
+                                                Chưa chọn tình huống nào<br>
+                                                <small>Hãy chọn tình huống từ danh sách bên trái</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="me-auto">
+                    <small class="text-muted">
+                        <span class="text-danger">*</span> Các trường bắt buộc
+                    </small>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="resetEditForm()">
+                    <i class="fas fa-times me-2"></i>Đóng
+                </button>
+                <button type="button" class="btn btn-warning" (click)="updateTest()">
+                    <i class="fas fa-save me-2"></i>Cập nhật bộ đề
                 </button>
             </div>
         </div>

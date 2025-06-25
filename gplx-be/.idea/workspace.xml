@@ -7,14 +7,9 @@
     <list default="true" id="b978d6b4-cd4b-4c1f-8278-7e2f0c217dc8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/controllers/TestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/ChapterSimulatorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/ChapterSimulatorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/QuestionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/QuestionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/RankSeviceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/RankSeviceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/SimulatorServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/SimulatorServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/TestDetailsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/entities/Test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/TestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/TestServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/TestSimulatorDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/TestSimulatorDetailsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/TestServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/demo/services/impl/TestServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,7 +197,7 @@
       <workItem from="1750349432946" duration="699000" />
       <workItem from="1750685143411" duration="6637000" />
       <workItem from="1750771736543" duration="3597000" />
-      <workItem from="1750830073210" duration="4787000" />
+      <workItem from="1750830073210" duration="6901000" />
     </task>
     <servers />
   </component>

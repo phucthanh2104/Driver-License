@@ -312,6 +312,108 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional
+    public TestDTO updateTestSimulator(TestDTO testDTO) {
+        // Kiểm tra TestDTO đầu vào
+        if (testDTO.getId() == null) {
+            throw new IllegalArgumentException("ID của Test là bắt buộc để cập nhật");
+        }
+
+        // Tìm Test hiện có
+        Test existingTest = testRepository.findById(testDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Test với ID " + testDTO.getId() + " không tồn tại"));
+
+        // Cập nhật các trường của Test
+        existingTest.setTitle(testDTO.getTitle());
+        existingTest.setDescription(testDTO.getDescription());
+        existingTest.setType(testDTO.getType());
+        existingTest.setTime(testDTO.getTime());
+        existingTest.setPassedScore(testDTO.getPassedScore());
+        existingTest.setStatus(testDTO.isStatus());
+        existingTest.setTest(false);
+        existingTest.setNumberOfQuestions(testDTO.getNumberOfQuestions());
+
+        // Xử lý rank
+        if (testDTO.getRank() != null) {
+            RankDTO rankDTO = rankService.findById(testDTO.getRank());
+            if (rankDTO == null) {
+                throw new IllegalArgumentException("Rank với ID " + testDTO.getRank() + " không tồn tại");
+            }
+            Rank rank = modelMapper.map(rankDTO, Rank.class);
+            existingTest.setRank(rank);
+        } else {
+            existingTest.setRank(null);
+        }
+
+        // Lấy danh sách TestSimulatorDetailDTO từ testDTO
+        List<TestSimulatorDetailDTO> testSimulatorDetailDTOs = testDTO.getTestSimulatorDetails();
+        if (testSimulatorDetailDTOs == null || testSimulatorDetailDTOs.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách câu hỏi không được để trống");
+        }
+
+        // Tạo danh sách TestSimulatorDetails mới
+        List<TestSimulatorDetails> updatedTestSimulatorDetails = new ArrayList<>();
+        for (TestSimulatorDetailDTO detailDTO : testSimulatorDetailDTOs) {
+            if (detailDTO.getSimulator() == null || detailDTO.getSimulator().getId() == null) {
+                throw new IllegalArgumentException("simulatorId không được để trống trong testSimulatorDetails");
+            }
+
+            // Tìm simulator từ repository
+            Simulator simulator = simulatorRepository.findById(detailDTO.getSimulator().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Simulator với ID " + detailDTO.getSimulator().getId() + " không tồn tại"));
+
+            // Tạo TestSimulatorDetails mới
+            TestSimulatorDetails testSimulatorDetail = new TestSimulatorDetails();
+            testSimulatorDetail.setTest(existingTest);
+            testSimulatorDetail.setSimulator(simulator);
+            testSimulatorDetail.setChapter(null); // chapter_id = null theo yêu cầu
+            testSimulatorDetail.setStatus(true); // status = true theo yêu cầu
+
+            updatedTestSimulatorDetails.add(testSimulatorDetail);
+        }
+
+        // Xóa danh sách TestSimulatorDetails hiện có và thay bằng danh sách mới
+        existingTest.getTestSimulatorDetails().clear();
+        existingTest.getTestSimulatorDetails().addAll(updatedTestSimulatorDetails);
+
+        // Lưu Test đã cập nhật
+        Test savedTest = testRepository.save(existingTest);
+
+        // Tải lại Test để đảm bảo dữ liệu nhất quán
+        Test loadedTest = testRepository.findById(savedTest.getId())
+                .orElseThrow(() -> new IllegalStateException("Không thể tải lại Test sau khi lưu"));
+        if (loadedTest.getTestSimulatorDetails() == null || loadedTest.getTestSimulatorDetails().size() != testSimulatorDetailDTOs.size()) {
+            throw new IllegalStateException("Danh sách TestSimulatorDetails không khớp sau khi lưu. Dự kiến: " + testSimulatorDetailDTOs.size() + ", Thực tế: " + (loadedTest.getTestSimulatorDetails() != null ? loadedTest.getTestSimulatorDetails().size() : 0));
+        }
+
+        // Ánh xạ Test sang TestDTO
+        TestDTO resultDTO = modelMapper.map(loadedTest, TestDTO.class);
+        if (resultDTO == null) {
+            throw new IllegalStateException("Không thể ánh xạ Test sang TestDTO");
+        }
+
+        // Ánh xạ danh sách TestSimulatorDetails sang TestSimulatorDetailDTO
+        List<TestSimulatorDetailDTO> resultTestSimulatorDetails = loadedTest.getTestSimulatorDetails().stream().map(testSimulatorDetail -> {
+            TestSimulatorDetailDTO dto = new TestSimulatorDetailDTO();
+            dto.setTestId(testSimulatorDetail.getTest().getId());
+            dto.setChapterSimulatorId(null); // chapter_id = null
+            Simulator simulator = testSimulatorDetail.getSimulator();
+            SimulatorDTO simulatorDTO = modelMapper.map(simulator, SimulatorDTO.class);
+            dto.setTestTime(testSimulatorDetail.getTest().getTime());
+            dto.setTestType(testSimulatorDetail.getTest().getType());
+            dto.setTestPassedScore(testSimulatorDetail.getTest().getPassedScore());
+
+            dto.setSimulator(simulatorDTO);
+            dto.setStatus(testSimulatorDetail.getStatus());
+            return dto;
+        }).collect(Collectors.toList());
+
+        resultDTO.setTestSimulatorDetails(resultTestSimulatorDetails);
+
+        return resultDTO;
+    }
+
+    @Override
+    @Transactional
     public TestDTO saveTest(TestDTO testDTO) {
         // Ánh xạ TestDTO sang Test entity
         Test test = new Test();

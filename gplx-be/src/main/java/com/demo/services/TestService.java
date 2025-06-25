@@ -22,4 +22,5 @@ public interface TestService {
     public TestDTO deleteTest(TestDTO testDTO);
     public TestDTO saveTesTSimulator(TestDTO testDTO);
     public TestDTO updateTest(TestDTO testDTO);
+    public TestDTO updateTestSimulator(TestDTO testDTO);
 }
