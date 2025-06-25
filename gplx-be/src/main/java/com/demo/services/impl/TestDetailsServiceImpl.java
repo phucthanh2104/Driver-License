@@ -1,4 +1,4 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.dtos.AnswerDTO;
 import com.demo.dtos.QuestionDTO;
@@ -8,6 +8,7 @@ import com.demo.repositories.SimulatorRepository;
 import com.demo.repositories.TestDetailsRepository;
 import com.demo.repositories.TestRepository;
 import com.demo.repositories.TestSimulatorDetailsRepository;
+import com.demo.services.TestDetailsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

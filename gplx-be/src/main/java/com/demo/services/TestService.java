@@ -1,7 +1,6 @@
 package com.demo.services;
 
 import com.demo.dtos.TestDTO;
-import com.demo.entities.Test;
 
 import java.util.List;
 
@@ -19,7 +18,8 @@ public interface TestService {
 
     public List<TestDTO> findTestByRankId(int rankId);
     public List<TestDTO> findSimulatorByRankId(int rankId);
-    public TestDTO save(TestDTO testDTO);
+    public TestDTO saveTest(TestDTO testDTO);
     public TestDTO deleteTest(TestDTO testDTO);
     public TestDTO saveTesTSimulator(TestDTO testDTO);
+    public TestDTO updateTest(TestDTO testDTO);
 }

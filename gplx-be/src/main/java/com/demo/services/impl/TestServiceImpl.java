@@ -1,10 +1,12 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.dtos.*;
 import com.demo.entities.*;
 import com.demo.repositories.QuestionRepository;
 import com.demo.repositories.SimulatorRepository;
 import com.demo.repositories.TestRepository;
+import com.demo.services.RankService;
+import com.demo.services.TestService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.modelmapper.ModelMapper;
@@ -14,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -194,9 +194,125 @@ public class TestServiceImpl implements TestService {
 
         return resultDTO;
     }
+
     @Override
     @Transactional
-    public TestDTO save(TestDTO testDTO) {
+    public TestDTO updateTest(TestDTO testDTO) {
+        // Kiểm tra TestDTO đầu vào
+        if (testDTO.getId() == null) {
+            throw new IllegalArgumentException("ID của Test là bắt buộc để cập nhật");
+        }
+
+        // Tìm Test hiện có
+        Test existingTest = testRepository.findById(testDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Test với ID " + testDTO.getId() + " không tồn tại"));
+
+        // Cập nhật các trường của Test
+        existingTest.setTitle(testDTO.getTitle());
+        existingTest.setDescription(testDTO.getDescription());
+        existingTest.setType(testDTO.getType());
+        existingTest.setTime(testDTO.getTime());
+        existingTest.setPassedScore(testDTO.getPassedScore());
+        existingTest.setStatus(testDTO.isStatus());
+        existingTest.setNumberOfQuestions(testDTO.getNumberOfQuestions());
+
+        // Xử lý rank
+        if (testDTO.getRank() != null) {
+            RankDTO rankDTO = rankService.findById(testDTO.getRank());
+            if (rankDTO == null) {
+                throw new IllegalArgumentException("Rank với ID " + testDTO.getRank() + " không tồn tại");
+            }
+            Rank rank = modelMapper.map(rankDTO, Rank.class);
+            existingTest.setRank(rank);
+        } else {
+            existingTest.setRank(null);
+        }
+
+        // Lấy danh sách TestDetailDTO từ testDTO
+        List<TestDetailDTO> testDetailDTOs = testDTO.getTestDetails();
+        if (testDetailDTOs == null || testDetailDTOs.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách câu hỏi không được để trống");
+        }
+
+        // Tạo danh sách TestDetails mới
+        List<TestDetails> updatedTestDetails = new ArrayList<>();
+        for (TestDetailDTO detailDTO : testDetailDTOs) {
+            if (detailDTO.getQuestion() == null || detailDTO.getQuestion().getId() == null) {
+                throw new IllegalArgumentException("questionId không được để trống trong testDetails");
+            }
+
+            // Tìm câu hỏi từ repository
+            Question question = questionRepository.findByIdWithAnswers(detailDTO.getQuestion().getId());
+            if (question == null) {
+                throw new IllegalArgumentException("Câu hỏi với ID " + detailDTO.getQuestion().getId() + " không tồn tại");
+            }
+
+            // Tạo TestDetails mới
+            TestDetails testDetail = new TestDetails();
+            testDetail.setTest(existingTest);
+            testDetail.setQuestion(question);
+            testDetail.setChapter(null); // chapter_id = null theo yêu cầu
+            testDetail.setStatus(true); // status = true theo yêu cầu
+
+            updatedTestDetails.add(testDetail);
+        }
+
+        // Xóa danh sách TestDetails hiện có và thay bằng danh sách mới
+        existingTest.getTestDetails().clear();
+        existingTest.getTestDetails().addAll(updatedTestDetails);
+
+        // Lưu Test đã cập nhật
+        Test savedTest = testRepository.save(existingTest);
+
+        // Tải lại Test để đảm bảo dữ liệu nhất quán
+        Test loadedTest = testRepository.findById(savedTest.getId())
+                .orElseThrow(() -> new IllegalStateException("Không thể tải lại Test sau khi lưu"));
+        if (loadedTest.getTestDetails() == null || loadedTest.getTestDetails().size() != testDetailDTOs.size()) {
+            throw new IllegalStateException("Danh sách TestDetails không khớp sau khi lưu. Dự kiến: " + testDetailDTOs.size() + ", Thực tế: " + (loadedTest.getTestDetails() != null ? loadedTest.getTestDetails().size() : 0));
+        }
+
+        // Ánh xạ Test sang TestDTO
+        TestDTO resultDTO = modelMapper.map(loadedTest, TestDTO.class);
+        if (resultDTO == null) {
+            throw new IllegalStateException("Không thể ánh xạ Test sang TestDTO");
+        }
+
+        // Ánh xạ danh sách TestDetails sang TestDetailDTO
+        List<TestDetailDTO> resultTestDetails = loadedTest.getTestDetails().stream().map(testDetail -> {
+            TestDetailDTO dto = new TestDetailDTO();
+            dto.setTestId((int) testDetail.getTest().getId());
+            dto.setChapterId(null); // chapter_id = null
+            Question question = testDetail.getQuestion();
+            QuestionDTO questionDTO = modelMapper.map(question, QuestionDTO.class);
+
+            // Ánh xạ danh sách Answer
+            if (question.getAnswers() != null) {
+                List<AnswerDTO> answerDTOs = question.getAnswers().stream()
+                        .map(answer -> modelMapper.map(answer, AnswerDTO.class))
+                        .collect(Collectors.toList());
+                questionDTO.setAnswers(answerDTOs);
+            }
+
+            // Gán correctAnswer
+            questionDTO.setCorrectAnswer(question.getAnswers().stream()
+                    .filter(Answer::isCorrect)
+                    .findFirst()
+                    .map(Answer::getId)
+                    .orElse(null));
+
+            dto.setQuestion(questionDTO);
+            dto.setStatus(testDetail.isStatus());
+            return dto;
+        }).collect(Collectors.toList());
+
+        resultDTO.setTestDetails(resultTestDetails);
+
+        return resultDTO;
+    }
+
+    @Override
+    @Transactional
+    public TestDTO saveTest(TestDTO testDTO) {
         // Ánh xạ TestDTO sang Test entity
         Test test = new Test();
         test.setTitle(testDTO.getTitle());

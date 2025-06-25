@@ -24,6 +24,7 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
   listRank: any[] = [];
   listTestOriginal: any[] = [];
 
+  // Properties cho add test
   selectedQuestions: any[] = [];
   selectedLabels: string[] = [];
   newLabel: string = '';
@@ -35,6 +36,18 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
   rankId: number | null = null;
   searchTerm: string = '';
   filteredQuestions: any[] = [];
+
+  // Properties cho edit test
+  editTestId: number | null = null;
+  editTestTitle: string = '';
+  editTestDescription: string = '';
+  editTestTime: number | null = null;
+  editPassedScore: number | null = null;
+  editTestType: string = '';
+  editRankId: number | null = null;
+  editSelectedQuestions: any[] = [];
+  editFilteredQuestions: any[] = [];
+  editSearchTerm: string = '';
 
   private dataTable: any;
 
@@ -148,6 +161,7 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     this.questionService.findAll().then((res) => {
       this.questionList = res;
       this.filteredQuestions = [...this.questionList];
+      this.editFilteredQuestions = [...this.questionList];
       this.cdr.detectChanges();
     });
   }
@@ -181,6 +195,7 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // Methods cho Add Test
   filterQuestions() {
     if (!this.searchTerm || this.searchTerm.trim() === '') {
       this.filteredQuestions = this.questionList.filter(
@@ -311,6 +326,232 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
+  // Methods cho Edit Test
+  editTest(test: any) {
+    // Set thông tin cơ bản
+    this.editTestId = test.id;
+    this.editTestTitle = test.title;
+    this.editTestDescription = test.description || '';
+    this.editTestTime = test.time;
+    this.editPassedScore = test.passedScore;
+    this.editTestType = test.type?.toString() || '';
+
+    // Lấy rank ID
+    if (test.rank && typeof test.rank === 'object') {
+      this.editRankId = test.rank.id;
+    } else {
+      this.editRankId = test.rank;
+    }
+
+    // Load câu hỏi đã chọn từ testDetails
+    if (test.testDetails && test.testDetails.length > 0) {
+      this.editSelectedQuestions = test.testDetails
+        .filter((detail: any) => detail.status && detail.question)
+        .map((detail: any) => detail.question);
+    } else {
+      this.editSelectedQuestions = [];
+    }
+
+    // Filter danh sách câu hỏi
+    this.filterEditQuestions();
+
+    // Mở modal
+    const modalElement = document.getElementById('editTestModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  filterEditQuestions() {
+    if (!this.editSearchTerm || this.editSearchTerm.trim() === '') {
+      this.editFilteredQuestions = this.questionList.filter(
+        (question) =>
+          !this.editSelectedQuestions.some(
+            (selected) => selected.id === question.id
+          )
+      );
+    } else {
+      const searchTermLower = this.editSearchTerm.toLowerCase().trim();
+      this.editFilteredQuestions = this.questionList.filter((question) => {
+        const isAlreadySelected = this.editSelectedQuestions.some(
+          (selected) => selected.id === question.id
+        );
+        if (isAlreadySelected) return false;
+
+        const content = question.content?.toLowerCase() || '';
+        const id = question.id?.toString() || '';
+        return (
+          content.includes(searchTermLower) || id.includes(searchTermLower)
+        );
+      });
+    }
+    this.cdr.detectChanges();
+  }
+
+  onEditSearchQuestions(event: any) {
+    this.editSearchTerm = event.target.value;
+    this.filterEditQuestions();
+  }
+
+  addQuestionToEditTest(question: any) {
+    if (!this.editSelectedQuestions.some((q) => q.id === question.id)) {
+      this.editSelectedQuestions.push(question);
+      this.filterEditQuestions();
+    }
+  }
+
+  removeQuestionFromEditTest(question: any) {
+    const index = this.editSelectedQuestions.findIndex(
+      (q) => q.id === question.id
+    );
+    if (index > -1) {
+      this.editSelectedQuestions.splice(index, 1);
+      this.filterEditQuestions();
+    }
+  }
+
+  updateTest() {
+    // Validation
+    if (
+      !this.editTestTitle ||
+      !this.editTestTime ||
+      this.editTestType === '-1' ||
+      !this.editPassedScore ||
+      !this.editRankId ||
+      this.editRankId === -1
+    ) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail:
+          'Vui lòng điền đầy đủ thông tin tiêu đề, thời gian, loại, điểm đậu và hạng!',
+      });
+      return;
+    }
+
+    if (this.editSelectedQuestions.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Cảnh báo',
+        detail: 'Vui lòng chọn ít nhất một câu hỏi!',
+      });
+      return;
+    }
+
+    const updateData: any = {
+      id: this.editTestId,
+      title: this.editTestTitle,
+      description: this.editTestDescription,
+      type: this.editTestType,
+      time: this.editTestTime,
+      passedScore: this.editPassedScore || 0,
+      status: true,
+      numberOfQuestions: this.editSelectedQuestions.length,
+      rank: this.editRankId,
+      testDetails: this.editSelectedQuestions.map((question) => ({
+        question: { id: question.id },
+        status: true,
+      })),
+    };
+
+    this.testService
+      .updateTest(updateData)
+      .then((response) => {
+        console.log('Kết quả cập nhật:', response);
+
+        // Hiển thị toast thành công
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Cập nhật bộ đề thành công!',
+        });
+
+        // Đóng modal
+        const modalElement = document.getElementById('editTestModal');
+        if (modalElement) {
+          const modal = (window as any).bootstrap.Modal.getInstance(
+            modalElement
+          );
+          modal.hide();
+        }
+
+        // Tạo object test đã cập nhật với thông tin đầy đủ
+        const updatedTest = {
+          id: this.editTestId,
+          title: this.editTestTitle,
+          description: this.editTestDescription,
+          type: parseInt(this.editTestType),
+          time: this.editTestTime,
+          passedScore: this.editPassedScore,
+          status: true,
+          numberOfQuestions: this.editSelectedQuestions.length,
+          rank: this.getRankObject(this.editRankId),
+          testDetails: this.editSelectedQuestions.map((question) => ({
+            question: question,
+            status: true,
+          })),
+        };
+
+        // Reset form
+        this.resetEditForm();
+
+        // Cập nhật list ngay lập tức
+        this.updateListAfterEdit(updatedTest);
+      })
+      .catch((error) => {
+        console.error('Lỗi khi cập nhật bộ đề:', error);
+
+        // Hiển thị toast lỗi
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail:
+            'Có lỗi xảy ra khi cập nhật bộ đề: ' +
+            (error.message || 'Lỗi không xác định'),
+        });
+      });
+  }
+
+  getRankObject(rankId: any) {
+    const rank = this.listRank.find((r) => r.id == rankId);
+    return rank || { id: rankId, name: `Hạng ${rankId}` };
+  }
+  resetEditForm() {
+    this.editTestId = null;
+    this.editTestTitle = '';
+    this.editTestDescription = '';
+    this.editTestTime = null;
+    this.editPassedScore = null;
+    this.editTestType = '';
+    this.editRankId = null;
+    this.editSelectedQuestions = [];
+    this.editSearchTerm = '';
+    this.editFilteredQuestions = [...this.questionList];
+    this.cdr.detectChanges();
+  }
+
+  updateListAfterEdit(updatedTest: any) {
+    // Cập nhật trong listTestOriginal
+    const originalIndex = this.listTestOriginal.findIndex(
+      (test) => test.id === updatedTest.id
+    );
+    if (originalIndex > -1) {
+      this.listTestOriginal[originalIndex] = updatedTest;
+    }
+
+    // Cập nhật trong listTest hiện tại
+    const currentIndex = this.listTest.findIndex(
+      (test) => test.id === updatedTest.id
+    );
+    if (currentIndex > -1) {
+      this.listTest[currentIndex] = updatedTest;
+    }
+
+    this.cdr.detectChanges();
+    console.log('List updated after edit:', this.listTest);
+  }
+
   // Hàm thêm test mới vào list
   addNewTestToList(newTest: any) {
     // Thêm vào đầu list
@@ -391,5 +632,11 @@ export class TestComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cdr.detectChanges();
 
     console.log('List updated after delete:', this.listTest);
+  }
+  getRankNameById(rankId: any): string {
+    if (!rankId) return 'Không xác định';
+
+    const rank = this.listRank.find((r) => r.id === rankId);
+    return rank ? rank.name : `Hạng ${rankId}`;
   }
 }

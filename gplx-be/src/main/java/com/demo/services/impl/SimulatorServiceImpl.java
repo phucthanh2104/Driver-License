@@ -1,16 +1,14 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.dtos.SimulatorDTO;
-import com.demo.dtos.TestDTO;
 import com.demo.repositories.SimulatorRepository;
+import com.demo.services.SimulatorService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.modelmapper.internal.bytebuddy.description.method.MethodDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SimulatorServiceImpl implements SimulatorService {
