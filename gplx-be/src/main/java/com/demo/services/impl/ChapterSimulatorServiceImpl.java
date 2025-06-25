@@ -1,7 +1,8 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.dtos.ChapterSimulatorDTO;
 import com.demo.repositories.ChapterSimulatorRepository;
+import com.demo.services.ChapterSimulatorService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;

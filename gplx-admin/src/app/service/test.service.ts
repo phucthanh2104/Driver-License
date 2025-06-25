@@ -26,4 +26,7 @@ export class TestService {
   async delete(id : any): Promise<any> {
     return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/deleteTest/'+id, {}));
   }
+  async updateTest(simulator: any): Promise<any> {
+    return await lastValueFrom(this.httpClient.post(this.baseUrlService.getBaseUrl() + 'test/updateTest',simulator));
+  }
 }

@@ -2,13 +2,10 @@ package com.demo.controllers;
 
 import com.demo.dtos.RankDTO;
 import com.demo.dtos.TestDTO;
-import com.demo.entities.Test;
-import com.demo.repositories.TestRepository;
 import com.demo.services.RankService;
 import com.demo.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("api/test")
@@ -126,7 +121,7 @@ public class TestController {
     public ResponseEntity<Object> addTest(@RequestBody TestDTO testDTO) {
         Map<String, Object> response = new HashMap<>();
         try {
-            TestDTO savedTestDTO = testService.save(testDTO);
+            TestDTO savedTestDTO = testService.saveTest(testDTO);
             response.put("status", "success");
             response.put("test", savedTestDTO);
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -139,6 +134,27 @@ public class TestController {
             response.put("status", "error");
             response.put("test", null);
             response.put("message", "Có lỗi xảy ra khi thêm bài test: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping(value = "updateTest", consumes = MimeTypeUtils.APPLICATION_JSON_VALUE, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updateTest(@RequestBody TestDTO testDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            TestDTO updatedTestDTO = testService.updateTest(testDTO);
+            response.put("status", "success");
+            response.put("test", updatedTestDTO);
+            System.out.println("Updated TestDTO: " + updatedTestDTO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("test", null);
+            response.put("message", "Có lỗi xảy ra khi cập nhật bài test: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

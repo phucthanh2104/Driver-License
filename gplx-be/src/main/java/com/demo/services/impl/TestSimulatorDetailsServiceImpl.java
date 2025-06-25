@@ -1,12 +1,12 @@
-package com.demo.services;
+package com.demo.services.impl;
 
 import com.demo.dtos.SimulatorDTO;
 import com.demo.dtos.TestSimulatorDetailDTO;
 import com.demo.entities.Test;
 import com.demo.entities.TestSimulatorDetails;
 import com.demo.repositories.TestSimulatorDetailsRepository;
+import com.demo.services.TestSimulatorDetailsService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
