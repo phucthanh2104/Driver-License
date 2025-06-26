@@ -153,7 +153,6 @@ class _TestQuestionPageState extends State<TestQuestionPage> {
   }
 
   // Hàm chấm điểm và kết thúc bài thi
-  // Hàm chấm điểm và kết thúc bài thi
   void _finishTest() async {
     setState(() {
       _isTestFinished = true;
@@ -180,9 +179,8 @@ class _TestQuestionPageState extends State<TestQuestionPage> {
     // Lưu kết quả vào SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('test_${widget.testId}_correct', _correctAnswers);
-
     await prefs.setInt('test_${widget.testId}_wrong', _wrongAnswers);
-    await prefs.setBool('test_${widget.testId}_hasFailedCriticalQuestion', _hasFailedCriticalQuestion); // Lưu hasFailedCriticalQuestion
+    await prefs.setBool('test_${widget.testId}_hasFailedCriticalQuestion', _hasFailedCriticalQuestion);
     // Lưu danh sách đáp án đã chọn
     List<String> answersToSave = selectedAnswers.map((answer) => answer?.toString() ?? "null").toList();
     await prefs.setStringList('test_${widget.testId}_answers', answersToSave);
@@ -192,13 +190,12 @@ class _TestQuestionPageState extends State<TestQuestionPage> {
   }
 
   // Hàm làm lại bài thi
-  // Hàm làm lại bài thi
   void _restartTest() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // Xóa dữ liệu cũ trong SharedPreferences
     await prefs.remove('test_${widget.testId}_correct');
     await prefs.remove('test_${widget.testId}_wrong');
-    await prefs.remove('test_${widget.testId}_hasFailedCriticalQuestion'); // Xóa hasFailedCriticalQuestion
+    await prefs.remove('test_${widget.testId}_hasFailedCriticalQuestion');
     await prefs.remove('test_${widget.testId}_answers');
 
     setState(() {
@@ -425,28 +422,28 @@ class _TestQuestionPageState extends State<TestQuestionPage> {
                   ),
                 ),
               ),
-              // Nội dung câu hỏi
+              // Nội dung câu hỏi với vùng cuộn dọc
               Expanded(
-                child: Padding(
+                child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'CÂU HỎI ${currentQuestionIndex + 1}:',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       SizedBox(height: 8),
                       Text(
                         currentQuestion['question'],
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 16),
                       ),
                       if (currentQuestion['image'] != null) ...[
                         SizedBox(height: 16),
                         Image.network(
                           currentQuestion['image'],
                           height: 100,
-                          errorBuilder: (context, error, stackTrace) => Text('Không thể tải hình ảnh'),
+                          errorBuilder: (context, error, stackTrace) => Text(''),
                         ),
                       ],
                       SizedBox(height: 16),
@@ -519,24 +516,29 @@ class _TestQuestionPageState extends State<TestQuestionPage> {
                   ),
                 ),
               ),
+              // Ô chứa các nút điều hướng
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                color: Colors.grey[200],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FloatingActionButton(
+                      heroTag: 'previous',
+                      onPressed: _isTestFinished ? null : previousQuestion,
+                      child: Icon(Icons.arrow_left),
+                    ),
+                    FloatingActionButton(
+                      heroTag: 'next',
+                      onPressed: _isTestFinished ? null : nextQuestion,
+                      child: Icon(Icons.arrow_right),
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         },
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          FloatingActionButton(
-            heroTag: 'previous',
-            onPressed: _isTestFinished ? null : previousQuestion,
-            child: Icon(Icons.arrow_left),
-          ),
-          FloatingActionButton(
-            heroTag: 'next',
-            onPressed: _isTestFinished ? null : nextQuestion,
-            child: Icon(Icons.arrow_right),
-          ),
-        ],
       ),
     );
   }

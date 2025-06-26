@@ -25,7 +25,7 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
   // Hàm tải danh sách bài kiểm tra từ API
   Future<void> loadTests() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? rankId = 2;
+    int? rankId = 3;
     if(prefs.getInt('rankID') != null){
       rankId = prefs.getInt('rankID');
       print(rankId);
@@ -82,12 +82,12 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
         children: [
           // Thanh tìm kiếm
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               onChanged: (query) => filterTests(query),
               // Gọi hàm lọc khi nhập vào ô tìm kiếm
               decoration: InputDecoration(
-                hintText: 'Tìm kiếm nội dung câu hỏi',
+                hintText: 'Tìm kiếm nội dung ',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -101,7 +101,7 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
               itemCount: filteredTests.length,
               itemBuilder: (context, index) {
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  margin: EdgeInsets.symmetric(horizontal: 9.0, vertical: 6.0),
                   child: ListTile(
                     title: Text(
                       filteredTests[index].title!,
@@ -130,10 +130,7 @@ class _ReviewTestListPageState extends State<ReviewTestListPage> {
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Text(
-                                "${filteredTests[index].numberOfQuestions}",
-                                style: TextStyle(fontSize: 20),
-                              ),
+
                             ],
                           ),
                       ],

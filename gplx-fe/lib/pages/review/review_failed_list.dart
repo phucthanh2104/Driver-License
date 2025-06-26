@@ -184,7 +184,7 @@ class _ReviewFailedListPageState extends State<ReviewFailedListPage> {
       ),
       body: Column(
         children: [
-          // Thanh tìm kiếm
+          // Thanh tìm kiếm (đã comment, giữ nguyên)
           // Padding(
           //   padding: const EdgeInsets.all(8.0),
           //   child: TextField(
@@ -264,28 +264,28 @@ class _ReviewFailedListPageState extends State<ReviewFailedListPage> {
                         ),
                       ),
                     ),
-                    // Nội dung câu hỏi
+                    // Nội dung câu hỏi với vùng cuộn dọc
                     Expanded(
-                      child: Padding(
+                      child: SingleChildScrollView(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'CÂU HỎI ${currentQuestionIndex + 1}:',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                             ),
                             SizedBox(height: 8),
                             Text(
                               currentQuestion['question'],
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: 16),
                             ),
                             if (currentQuestion['image'] != null) ...[
                               SizedBox(height: 16),
                               Image.network(
                                 currentQuestion['image'],
                                 height: 100,
-                                errorBuilder: (context, error, stackTrace) => Text('Không thể tải hình ảnh'),
+                                errorBuilder: (context, error, stackTrace) => Text(''),
                               ),
                             ],
                             SizedBox(height: 16),
@@ -354,26 +354,31 @@ class _ReviewFailedListPageState extends State<ReviewFailedListPage> {
               },
             ),
           ),
-        ],
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          FloatingActionButton(
-            heroTag: 'previous',
-            onPressed: previousQuestion,
-            child: Icon(Icons.arrow_left),
-          ),
-          FloatingActionButton(
-            heroTag: 'check',
-            onPressed: selectedAnswer != null ? checkAnswer : null,
-            child: Icon(Icons.check),
-            backgroundColor: selectedAnswer != null ? Colors.green : Colors.grey,
-          ),
-          FloatingActionButton(
-            heroTag: 'next',
-            onPressed: nextQuestion,
-            child: Icon(Icons.arrow_right),
+          // Ô chứa các nút điều hướng
+          Container(
+            padding: const EdgeInsets.all(8.0),
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'previous',
+                  onPressed: previousQuestion,
+                  child: Icon(Icons.arrow_left),
+                ),
+                FloatingActionButton(
+                  heroTag: 'check',
+                  onPressed: selectedAnswer != null ? checkAnswer : null,
+                  child: Icon(Icons.check),
+                  backgroundColor: selectedAnswer != null ? Colors.green : Colors.grey,
+                ),
+                FloatingActionButton(
+                  heroTag: 'next',
+                  onPressed: nextQuestion,
+                  child: Icon(Icons.arrow_right),
+                ),
+              ],
+            ),
           ),
         ],
       ),
