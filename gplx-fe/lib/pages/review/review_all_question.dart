@@ -21,7 +21,7 @@ class _ReviewAllQuestionPageState extends State<ReviewAllQuestionPage> {
   late Future<List<Question>> questionsFuture; // Future để gọi API
   final QuestionAPI api = QuestionAPI(); // Khởi tạo QuestionAPI
   late ScrollController _scrollController; // Controller để điều khiển thanh trượt
-  double itemWidth = 85.0; // Chiều rộng cố định của mỗi item
+  double itemWidth = 95.0; // Chiều rộng cố định của mỗi item
   late List<Map<String, dynamic>> questions;
 
   @override

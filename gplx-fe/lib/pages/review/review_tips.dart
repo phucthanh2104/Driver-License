@@ -175,8 +175,8 @@ class TipsPage extends StatelessWidget {
             SizedBox(height: 8),
             Text(
               '1. Nhất chớm: Xe nào chởm tới vạch trước thì được đi trước.\n'
-                  '2. Nhì ưu: Xe ưu tiên được đi trước. Thứ tự xe ưu tiên: Hoả-Sy-An-Thương (Cứu hoả - Quân sự - Công an - Cứu thương - Hộ đê - Đoàn xe tang).\n'
-                  '3. Tam dừng: Xe ở đường chính, đường ưu tiên.\n'
+                  '2. Nhì ưu: Xe ưu tiên được đi trước. Thứ tự xe ưu tiên: Hoả-Sự-An-Thương (Cứu hoả - Quân sự - Công an - Cứu thương - Hộ đê - Đoàn xe tang).\n'
+                  '3. Tam đường: Xe ở đường chính, đường ưu tiên.\n'
                   '4. Tứ hướng: Thứ tự hướng: Bên phải trống - Rẽ phải - Đi thẳng - Rẽ trái.',
               style: TextStyle(fontSize: 16),
             ),
