@@ -25,6 +25,8 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
   late Future<List<TestDetail>> testDetailsFuture; // Future để gọi API
   final TestDetailsAPI api = TestDetailsAPI();
   late ScrollController _scrollController; // Controller để điều khiển thanh trượt
+  late List<Map<String, dynamic>> questions;
+
   @override
   void initState() {
     super.initState();
@@ -81,9 +83,6 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
     }
   }
 
-  // Danh sách câu hỏi sẽ được tạo từ dữ liệu API
-  late List<Map<String, dynamic>> questions;
-
   // Chuyển đổi TestDetail thành định dạng của questions
   List<Map<String, dynamic>> convertTestDetailsToQuestions(List<TestDetail> testDetails) {
     return testDetails.map((testDetail) {
@@ -93,7 +92,7 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
         'answers': question?.answers?.map((answer) => answer.content ?? '').toList() ?? [],
         'correctAnswer': question?.answers?.indexWhere((answer) => answer.correct ?? false) ?? 0,
         'explanation': question?.explain ?? 'Không có giải thích',
-        'image': BaseUrl.imageUrl +  question!.image!, // Thêm trường image nếu cần hiển thị
+        'image': question?.image != null ? BaseUrl.imageUrl + question!.image! : null, // Xử lý trường image
       };
     }).toList();
   }
@@ -166,10 +165,12 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
                             color: currentQuestionIndex == index ? Colors.teal : Colors.grey[300],
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
-                            'Câu ${index + 1}',
-                            style: TextStyle(
-                              color: currentQuestionIndex == index ? Colors.white : Colors.black,
+                          child: Center(
+                            child: Text(
+                              'Câu ${index + 1}',
+                              style: TextStyle(
+                                color: currentQuestionIndex == index ? Colors.white : Colors.black,
+                              ),
                             ),
                           ),
                         ),
@@ -178,28 +179,28 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
                   ),
                 ),
               ),
-              // Nội dung câu hỏi
+              // Nội dung câu hỏi với vùng cuộn dọc
               Expanded(
-                child: Padding(
+                child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'CÂU HỎI ${currentQuestionIndex + 1}:',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                       SizedBox(height: 8),
                       Text(
                         currentQuestion['question'],
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 16),
                       ),
                       if (currentQuestion['image'] != null) ...[
                         SizedBox(height: 16),
                         Image.network(
                           currentQuestion['image'],
                           height: 100, // Điều chỉnh kích thước ảnh nếu cần
-                          errorBuilder: (context, error, stackTrace) => Text('Không thể tải hình ảnh'),
+                          errorBuilder: (context, error, stackTrace) => Text(''),
                         ),
                       ],
                       SizedBox(height: 16),
@@ -263,30 +264,35 @@ class _ReviewQuestionPageState extends State<ReviewQuestionPage> {
                   ),
                 ),
               ),
+              // Ô chứa các nút điều hướng
+              Container(
+                padding: const EdgeInsets.all(8.0),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FloatingActionButton(
+                      heroTag: 'previous',
+                      onPressed: previousQuestion,
+                      child: Icon(Icons.arrow_left),
+                    ),
+                    FloatingActionButton(
+                      heroTag: 'check',
+                      onPressed: selectedAnswer != null ? checkAnswer : null,
+                      child: Icon(Icons.check),
+                      backgroundColor: selectedAnswer != null ? Colors.green : Colors.grey,
+                    ),
+                    FloatingActionButton(
+                      heroTag: 'next',
+                      onPressed: nextQuestion,
+                      child: Icon(Icons.arrow_right),
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         },
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          FloatingActionButton(
-            heroTag: 'previous',
-            onPressed: previousQuestion,
-            child: Icon(Icons.arrow_left),
-          ),
-          FloatingActionButton(
-            heroTag: 'check',
-            onPressed: selectedAnswer != null ? checkAnswer : null,
-            child: Icon(Icons.check),
-            backgroundColor: selectedAnswer != null ? Colors.green : Colors.grey,
-          ),
-          FloatingActionButton(
-            heroTag: 'next',
-            onPressed: nextQuestion,
-            child: Icon(Icons.arrow_right),
-          ),
-        ],
       ),
     );
   }

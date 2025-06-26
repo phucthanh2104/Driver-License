@@ -9,7 +9,7 @@ import 'package:gplx/pages/simulator/simulator_dashboard.dart';
 import 'package:gplx/pages/test/test_list.dart';
 import 'package:gplx/pages/review/review_tips.dart'; // Import trang TipsPage
 import 'package:gplx/pages/test/test_random_list.dart';
-
+import 'package:gplx/pages/ChatbotAI.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -58,6 +58,11 @@ class _DashboardPageState extends State<DashboardPage> {
       'title': 'Ôn tập câu hỏi',
       'icon': Icons.book,
       'color': Colors.teal,
+    },
+    {
+      'title': 'Hỏi đáp AI',
+      'icon': Icons.chat,
+      'color': Colors.amberAccent,
     },
     {
       'title': 'Các biển báo',
@@ -124,7 +129,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 8.0,
                   mainAxisSpacing: 8.0,
-                  childAspectRatio: 1.03,
+                  childAspectRatio: 1.08,
 
                 ),
                 itemCount: dashboardItems.length,
@@ -185,7 +190,17 @@ class _DashboardPageState extends State<DashboardPage> {
                               builder: (context) => SimulationDashboardPage(),
                             ),
                           );
-                        } else if (dashboardItems[index]['title'] ==
+                        }
+                        else if (dashboardItems[index]['title'] ==
+                            'Hỏi đáp AI') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatbotAI(),
+                            ),
+                          );
+                        }
+                        else if (dashboardItems[index]['title'] ==
                             'Các biển báo') {
                           Navigator.push(
                             context,

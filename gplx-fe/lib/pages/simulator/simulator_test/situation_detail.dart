@@ -11,8 +11,8 @@ import 'dart:convert';
 class SituationDetailPage extends StatefulWidget {
   final List<Simulator> situations; // Danh sách các tình huống
   final int initialIndex; // Vị trí tình huống ban đầu
-  final int testId; // ID của bài thi
-  final int testPassedScore; // Điểm tối thiểu để đạt
+  final int testId;
+  final int testPassedScore;
 
   const SituationDetailPage({
     Key? key,
@@ -35,7 +35,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
 
   late int videoLength;
   late int dangerSecond;
-  late int currentIndex; // Theo dõi tình huống hiện tại
+  late int currentIndex;
 
   int? _score;
 
@@ -48,11 +48,11 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
 
   late Map<int, String> colorMap;
 
-  // Biến trạng thái cho bài thi
+
   bool _isTestFinished = false;
   bool _hasPreviousResult = false;
-  Map<int, int?> scores = {}; // Lưu điểm của từng tình huống
-  Map<int, bool> criticalFailures = {}; // Lưu trạng thái điểm liệt
+  Map<int, int?> scores = {};
+  Map<int, bool> criticalFailures = {};
 
   // Đồng hồ đếm ngược
   Timer? _timer;
@@ -67,7 +67,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     _initializeVideoPlayer();
     _initializeColorMap();
     _loadPreviousResult();
-    _fetchTestTimeAndStartTimer(); // Lấy testTime từ API và khởi động đồng hồ
+    _fetchTestTimeAndStartTimer();
   }
 
   // Lấy testTime từ API và khởi động đồng hồ
@@ -96,7 +96,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     }
   }
 
-  // Hàm lấy dữ liệu từ API (dựa trên đoạn code bạn cung cấp)
+
   Future<List<TestSimulatortDetail>> findByTestId(int id) async {
     var response = await http.get(Uri.parse(BaseUrl.url + "testSimulatorDetails/findByTestId/" + id.toString()));
     if (response.statusCode == 200) {
@@ -107,7 +107,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     }
   }
 
-  // Khởi động đồng hồ đếm ngược
+
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_remainingTime > 0) {
@@ -123,7 +123,7 @@ class _SituationDetailPageState extends State<SituationDetailPage> {
     });
   }
 
-  // Định dạng thời gian mm:ss
+
   String _formatTime(int seconds) {
     int minutes = seconds ~/ 60;
     int remainingSeconds = seconds % 60;

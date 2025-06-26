@@ -287,7 +287,7 @@ class _TestRandomQuestionPageState extends State<TestRandomQuestionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.categoryTitle),
+        title: Text("Đề ngẫu nhiên"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -467,19 +467,19 @@ class _TestRandomQuestionPageState extends State<TestRandomQuestionPage> {
                       children: [
                         Text(
                           'CÂU HỎI ${currentQuestionIndex + 1}:',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                         SizedBox(height: 8),
                         Text(
                           currentQuestion['question'],
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 16),
                         ),
                         if (currentQuestion['image'] != null) ...[
                           SizedBox(height: 16),
                           Image.network(
                             currentQuestion['image'],
                             height: 100,
-                            errorBuilder: (context, error, stackTrace) => Text('Không thể tải hình ảnh'),
+                            errorBuilder: (context, error, stackTrace) => Text(''),
                           ),
                         ],
                         SizedBox(height: 16),
